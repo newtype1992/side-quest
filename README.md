@@ -1,3 +1,11 @@
+<p align="center">
+  <img src="docs/assets/side-quest.svg" width="1000" alt="Side Quest — animated cyan and gold sound waves. Make Some Noise." />
+</p>
+
+<p align="center">
+  <img src="docs/assets/side-quest-hypeman.gif" width="384" alt="Hype Man performs his Make Some Noise ability in an animated pixel-art preview." />
+</p>
+
 # Side Quest combat prototype
 
 Hype Man now uses the v7 character set, including four body views, Make Some Noise, On a Roll, and the revised death animations. Editable art is in `art/hypeman/`; see `docs/hypeman-animation.md` for playback details and validation.
