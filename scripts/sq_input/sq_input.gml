@@ -63,7 +63,7 @@ function sq_read_input() {
         _input.reload = _pad_reload; _input.active = _pad_active;
     } else {
         _input.mx = _keys.x; _input.my = _keys.y;
-        _input.aim = point_direction(game.player.x, game.player.y - 18, mouse_x, mouse_y);
+        _input.aim = point_direction(game.player.x, game.player.y - 10, mouse_x, mouse_y);
         _input.fire = _mouse_fire;
         _input.roll = keyboard_check_pressed(vk_space) || mouse_check_button_pressed(mb_right);
         _input.reload = keyboard_check_pressed(ord("R"));

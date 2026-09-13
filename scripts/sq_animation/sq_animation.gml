@@ -1,6 +1,6 @@
-/// Hype Man v7: four body views, independent movement/actions, native pixel art.
+/// Hype Man v8 compact proof; v7 animation data retained for legacy effects.
 function sq_animation_state() {
-    return {idle: 0, move: 0, moving: false, backward: false, hit: -1,
+    return {idle: 0, move: 0, compact_move: 0, moving: false, backward: false, hit: -1,
         noise: -1, noise_facing: "right", death: -1, death_facing: "right",
         roll_facing: "right", hype: 0};
 }
@@ -29,9 +29,11 @@ function sq_art_init() {
     if (_sprites.noise < 0 || _sprites.hype_rear < 0 || _sprites.hype_front < 0)
         show_error("Unable to load Hype Man effects", true);
     global.sq_art = {meta: _meta, tags: _tags, sprites: _sprites, surface: -1};
+    sq_compact_init();
 }
 
 function sq_art_cleanup() {
+    if(variable_global_exists("sq_compact") && sprite_exists(global.sq_compact.atlas)) sprite_delete(global.sq_compact.atlas);
     if (!variable_global_exists("sq_art")) return;
     var _a = global.sq_art;
     if (surface_exists(_a.surface)) surface_free(_a.surface);
@@ -74,6 +76,7 @@ function sq_animation_tick(_g, _input, _dt) {
     var _speed = min(1, point_distance(0, 0, _input.mx, _input.my));
     _a.moving = _speed > 0.01 && _p.roll <= 0;
     _a.backward = _input.mx * lengthdir_x(1, _input.aim) + _input.my * lengthdir_y(1, _input.aim) < -0.1;
+    if (_a.moving) _a.compact_move = (_a.compact_move + _ms * _speed * (_p.hype > 0 ? _g.cfg.hype_move : 1)) mod 480;
     if (_a.moving) _a.move = (_a.move + _ms * _speed * (_p.hype > 0 ? _g.cfg.hype_move : 1)) mod 600;
 }
 
@@ -114,6 +117,7 @@ function sq_animation_selection(_g) {
 }
 
 function sq_weapon_origin(_g, _respect_cover) {
+    if(variable_global_exists("sq_compact")) return sq_compact_weapon_origin(_g,_respect_cover);
     var _p = _g.player;
     var _index = sq_animation_index("shoot_" + sq_aim_direction(_p.aim), 0);
     var _m = global.sq_art.meta.frames[_index].muzzle;
@@ -135,6 +139,7 @@ function sq_art_paint(_key, _index, _dx, _dy) {
 }
 
 function sq_hypeman_draw(_g) {
+    if(variable_global_exists("sq_compact")){sq_compact_draw(_g);return;}
     var _p = _g.player; var _a = _p.anim; var _art = global.sq_art;
     var _sel = sq_animation_selection(_g);
     var _x = floor(_p.x); var _y = floor(_p.y);
@@ -231,7 +236,7 @@ function sq_animation_gallery(_scene) {
         var _g = sq_test_game(); var _p = _g.player;
         _p.x = -100; _p.y = -100; _p.aim = _angles[_i];
         var _face = sq_body_facing(sq_aim_direction(_p.aim));
-        _p.anim.moving = true; _p.anim.move = 200;
+        _p.anim.moving = true; _p.anim.move = 200; _p.anim.compact_move = 160;
         if (_scene == "animation-noise") { _p.anim.noise = 170; _p.anim.noise_facing = _face; }
         if (_scene == "animation-fire") _p.fire = 0.15;
         if (_scene == "animation-reload") _p.reload = 0.46;
@@ -249,4 +254,82 @@ function sq_animation_gallery(_scene) {
     }
     sq_text(18, 291, "48 X 48 NATIVE ART / 3X NEAREST PIXEL DISPLAY", $BBC7D2, 1);
     sq_text(18, 312, "ACTUAL ENGINE FRAMEBUFFER", $8C9EAF, 1);
+}
+
+/// Compact v8 playable animation proof. v7 sources remain preserved separately.
+function sq_compact_init() {
+ var _f=file_text_open_read("hypeman-v8-proof/Hype-Man-Proof.json");var _s="";
+ while(!file_text_eof(_f)){_s+=file_text_read_string(_f);file_text_readln(_f);}file_text_close(_f);
+ var _atlas=sprite_add("hypeman-v8-proof/Hype-Man-Proof.png",1,false,false,0,0);
+ if(_atlas<0)show_error("Missing compact Hype Man atlas",true);
+ global.sq_compact={meta:json_parse(_s),atlas:_atlas};
+}
+function sq_compact_index(_clip,_time) {
+ var _c=variable_struct_get(global.sq_compact.meta.clips,_clip);var _sum=0;
+ for(var _i=0;_i<array_length(_c.indices);++_i){_sum+=_c.durations[_i];if(_time<_sum)return _c.indices[_i];}
+ return _c.indices[array_length(_c.indices)-1];
+}
+function sq_compact_paint(_index,_dx,_dy) {
+ var _r=global.sq_compact.meta.frames[_index];
+ draw_sprite_part_ext(global.sq_compact.atlas,0,_r.x,_r.y,48,48,_dx,_dy,1,1,c_white,1);
+}
+function sq_compact_selection(_g) {
+ var _p=_g.player;var _a=_p.anim;var _d=sq_aim_direction(_p.aim);var _v=sq_body_facing(_d);
+ if(_p.hp<=0 || _g.mode=="dead")return {body:sq_compact_index("death_"+_a.death_facing,max(0,_a.death)),gun:-1,rear:false,mode:"death"};
+ if(_p.roll>0)return {body:sq_compact_index("roll_"+_a.roll_facing,(1-_p.roll/_g.cfg.roll_duration)*380),gun:-1,rear:false,mode:"roll"};
+ var _time=_a.moving?(_a.backward?(480-_a.compact_move) mod 480:_a.compact_move):_a.idle;
+ var _body=sq_compact_index((_a.moving?"run_":"idle_")+_v,_time);
+ var _w=variable_struct_get(global.sq_compact.meta.weapons,_d);
+ var _gun=_p.fire>0?sq_compact_index("fire_"+_d,(1-_p.fire/_g.cfg.fire_interval)*170):_w.indices[2];
+ return {body:_body,gun:_gun,rear:_w.rear,mode:_a.moving?"run":"idle"};
+}
+function sq_compact_weapon_origin(_g,_respect_cover) {
+ var _p=_g.player;var _w=variable_struct_get(global.sq_compact.meta.weapons,sq_aim_direction(_p.aim));var _m=_w.muzzle[0];
+ var _x=_p.x-24+_m.x;var _y=_p.y-44+_m.y;
+ if(!_respect_cover)return {x:_x,y:_y};
+ var _steps=max(1,ceil(point_distance(_p.x,_p.y,_x,_y)));var _sx=_p.x;var _sy=_p.y;
+ for(var _i=1;_i<=_steps;++_i){var _nx=lerp(_p.x,_x,_i/_steps);var _ny=lerp(_p.y,_y,_i/_steps);if(sq_blocked(_g,_nx,_ny,_g.cfg.bullet_radius))break;_sx=_nx;_sy=_ny;}
+ return {x:_sx,y:_sy};
+}
+function sq_compact_draw(_g) {
+ var _p=_g.player;var _a=_p.anim;var _s=sq_compact_selection(_g);var _art=global.sq_art;
+ var _x=floor(_p.x);var _y=floor(_p.y);var _buff=_p.hype>0 && _p.hp>0;
+ draw_set_colour(make_colour_rgb(17,24,34));draw_ellipse(_x-8,_y-1,_x+8,_y+2,false);
+ if(_buff)draw_sprite(_art.sprites.hype_rear,floor(_a.hype/80),_x,_y);
+ if(!surface_exists(_art.surface))_art.surface=surface_create(48,48);
+ if(!surface_exists(_art.surface))return;
+ surface_set_target(_art.surface);draw_clear_alpha(c_black,0);
+ var _dx=0;var _dy=0;
+ if(_a.hit>=0 && _a.hit<90 && _s.mode!="roll" && _s.mode!="death"){
+  _dx=-sign(lengthdir_x(1,_p.aim));_dy=-sign(lengthdir_y(1,_p.aim));
+ }
+ if(_s.gun>=0 && _s.rear)sq_compact_paint(_s.gun,_dx,_dy);
+ sq_compact_paint(_s.body,_dx,_dy);
+ if(_s.gun>=0 && !_s.rear)sq_compact_paint(_s.gun,_dx,_dy);
+ if(_a.hit>=0 && _a.hit<40 && _p.hp>0){
+  gpu_set_blendmode_ext_sepalpha(bm_dest_alpha,bm_zero,bm_zero,bm_one);
+  draw_set_colour(make_colour_rgb(250,238,213));draw_rectangle(0,0,47,47,false);
+  gpu_set_blendmode(bm_normal);draw_set_colour(c_white);
+ }
+ surface_reset_target();draw_surface(_art.surface,_x-24,_y-44);
+ if(_buff)draw_sprite(_art.sprites.hype_front,floor(_a.hype/80),_x,_y);
+}
+function sq_compact_tests() {
+ var _meta=global.sq_compact.meta;var _g=sq_test_game();
+ sq_check(array_length(_meta.frames)==100 && _meta.bodyHeight==28,"compact proof loads 100 native frames with 28px body");
+ var _views=["right","front","left","back"];
+ for(var _i=0;_i<4;++_i){var _v=_views[_i];
+  sq_check(variable_struct_get(_meta.clips,"run_"+_v).total==480 && variable_struct_get(_meta.clips,"roll_"+_v).total==380,"compact run/roll timing "+_v);
+ }
+ for(var _i=0;_i<8;++_i){_g.player.aim=_i*45;var _s=sq_compact_selection(_g);var _m=sq_compact_weapon_origin(_g,false);
+  sq_check(_s.body>=0 && _s.gun>=0 && point_distance(_g.player.x,_g.player.y,_m.x,_m.y)<25,"compact eight-direction aim/muzzle "+string(_i));
+ }
+ _g=sq_test_game();var _in=sq_neutral_input();_in.mx=1;sq_player_step(_g,_in,0.08);
+ sq_check(sq_compact_selection(_g).mode=="run" && abs(_g.player.anim.compact_move-80)<0.01,"compact run clock follows movement");
+ _g.player.fire=_g.cfg.fire_interval;var _w=variable_struct_get(_meta.weapons,"e");
+ sq_check(sq_compact_selection(_g).gun==_w.indices[0],"compact first shot selects immediate recoil and flash");
+ _g.player.roll=_g.cfg.roll_duration;_g.player.anim.roll_facing="right";
+ sq_check(sq_compact_selection(_g).gun==-1 && sq_compact_selection(_g).mode=="roll","compact dodge hides pistol and overrides fire");
+ _g.player.roll=0;_g.player.hp=0;_g.player.anim.death=700;_g.player.anim.death_facing="right";
+ sq_check(sq_compact_selection(_g).body==variable_struct_get(_meta.clips,"death_right").indices[2],"compact death holds grounded concept key pose");
 }

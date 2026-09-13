@@ -2,9 +2,14 @@ game_set_speed(60, gamespeed_fps);
 gpu_set_texfilter(false);
 window_set_size(1280, 720);
 window_center();
-window_set_caption("Side Quest - Combat Prototype");
+window_set_caption("Side Quest - Hype Man v8 Animation Proof");
 window_set_cursor(cr_none);
 display_set_gui_size(640, 360);
+// Keep gameplay units unchanged, but render the approved art at display resolution.
+sq_camera = camera_create_view(0,0,640,360,0,noone,-1,-1,-1,-1);
+view_enabled=true; view_visible[0]=true; view_camera[0]=sq_camera;
+view_xport[0]=0; view_yport[0]=0; view_wport[0]=1280; view_hport[0]=720;
+surface_resize(application_surface,1280,720);
 game = sq_new_game();
 paused = false;
 pad_slot = -1;
@@ -26,6 +31,7 @@ global.sq_quiet = test_mode || capture_mode;
 global.sq_font = sq_font_data();
 sq_audio_init();
 sq_art_init();
+sq_environment_init();
 if (test_mode) {
     sq_self_tests();
     var _hardware = sq_read_input();
@@ -48,6 +54,11 @@ if (capture_mode) {
         game.player.hype = 2.5; game.player.anim.hype = 160;
         game.effects = [{x: game.player.x, y: game.player.y, kind: "noise", size: 84, life: 0.2, total: 0.4}];
     }
+    if (capture_scene == "depth") {
+        game.player.x=224;game.player.y=150;game.player.aim=0;
+        game.enemies=[sq_enemy(224,260,"melee",0),sq_enemy(408,152,"ranged",0)];game.bullets=[];
+    }
+    if (capture_scene == "destroyed") { game.obstacles[4].hp=0; game.mode="combat"; }
     if (capture_scene == "paused") paused = true;
     if (capture_scene == "controller") input_device = "CONTROLLER";
 }

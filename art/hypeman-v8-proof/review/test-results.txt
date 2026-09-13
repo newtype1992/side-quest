@@ -1,0 +1,97 @@
+SQ_PASS diagonal movement normalized
+SQ_PASS controller drift deadzone
+SQ_PASS analog speed preserved after radial deadzone
+SQ_PASS 112 native pixels per second
+SQ_PASS movement consistent at 30 and 60 updates
+SQ_PASS large moves cannot tunnel through shelf
+SQ_PASS room boundaries enforced
+SQ_PASS early roll invulnerable
+SQ_PASS roll rejects incoming damage
+SQ_PASS roll direction committed and shooting blocked
+SQ_PASS late roll vulnerable
+SQ_PASS late roll can take damage
+SQ_PASS hurt grace prevents multiple same-frame hits
+SQ_PASS gun fires immediately and consumes ammo
+SQ_PASS fire cadence enforced
+SQ_PASS manual reload begins
+SQ_PASS reload refills magazine
+SQ_PASS empty magazine starts automatic reload
+SQ_PASS fast projectile hits instead of tunneling
+SQ_PASS kill activates passive
+SQ_PASS last kill clears room and stray bullets
+SQ_PASS passive refreshes without stacking
+SQ_PASS shelf blocks fast player bullets
+SQ_PASS breakable crate releases collision
+SQ_PASS active only clears nearby hostile bullets
+SQ_PASS active stuns and pushes enemy
+SQ_PASS active cannot bypass cooldown
+SQ_PASS navigation reaches other side of shelf
+SQ_PASS melee navigates around shelves over time
+SQ_PASS ranged enemy telegraphs before firing
+SQ_PASS ranged volley has three spaced bullets
+SQ_PASS zero health enters death state
+SQ_PASS dead run no longer simulates
+SQ_PASS restart resets combat state
+SQ_PASS 304 character frames loaded
+SQ_PASS north and south select new body views
+SQ_PASS aim direction 0 has body and weapon art
+SQ_PASS aim direction 1 has body and weapon art
+SQ_PASS aim direction 2 has body and weapon art
+SQ_PASS aim direction 3 has body and weapon art
+SQ_PASS aim direction 4 has body and weapon art
+SQ_PASS aim direction 5 has body and weapon art
+SQ_PASS aim direction 6 has body and weapon art
+SQ_PASS aim direction 7 has body and weapon art
+SQ_PASS active triggers directional gesture while moving
+SQ_PASS shooting interrupts cosmetic gesture immediately
+SQ_PASS ability wave survives interrupted gesture
+SQ_PASS northward roll uses back roll and overrides reload
+SQ_PASS reload timing remains paused during roll
+SQ_PASS death captures facing at lethal hit
+SQ_PASS corpse holds final frame without simulating combat
+SQ_PASS restart resets all animation states
+SQ_PASS muzzle stops before shelf instead of shooting through cover
+SQ_PASS ability returns to ready after 520 ms
+SQ_PASS passive visual clock resets when the buff expires
+SQ_PASS hit reaction preserves reload phase
+SQ_PASS store player spawn is clear
+SQ_PASS store enemy spawn reachable 0
+SQ_PASS store enemy spawn reachable 1
+SQ_PASS store enemy spawn reachable 2
+SQ_PASS store enemy spawn reachable 3
+SQ_PASS store enemy spawn reachable 4
+SQ_PASS store aisle connected 0
+SQ_PASS store aisle connected 1
+SQ_PASS store aisle connected 2
+SQ_PASS store aisle connected 3
+SQ_PASS store aisle connected 4
+SQ_PASS store aisle connected 5
+SQ_PASS store shelf footprint blocks movement
+SQ_PASS store shelf blocks fast bullets
+SQ_PASS store carton destruction clears collision
+SQ_PASS store restart restores carton
+SQ_PASS tall shelf fades for player behind it
+SQ_PASS shelf stays opaque for player in front
+SQ_PASS tall shelf fades for enemy behind it
+SQ_PASS enemy pursues around new aisle islands
+SQ_PASS detailed environment dimensions loaded
+SQ_PASS compact proof loads 100 native frames with 28px body
+SQ_PASS compact run/roll timing right
+SQ_PASS compact run/roll timing front
+SQ_PASS compact run/roll timing left
+SQ_PASS compact run/roll timing back
+SQ_PASS compact eight-direction aim/muzzle 0
+SQ_PASS compact eight-direction aim/muzzle 1
+SQ_PASS compact eight-direction aim/muzzle 2
+SQ_PASS compact eight-direction aim/muzzle 3
+SQ_PASS compact eight-direction aim/muzzle 4
+SQ_PASS compact eight-direction aim/muzzle 5
+SQ_PASS compact eight-direction aim/muzzle 6
+SQ_PASS compact eight-direction aim/muzzle 7
+SQ_PASS compact run clock follows movement
+SQ_PASS compact first shot selects immediate recoil and flash
+SQ_PASS compact dodge hides pistol and overrides fire
+SQ_PASS compact death holds grounded concept key pose
+SQ_TEST_RESULTS pass=94 fail=0
+SQ_INPUT_ADAPTER_PASS controller_slot=0
+SQ_RUNTIME_SMOKE_PASS

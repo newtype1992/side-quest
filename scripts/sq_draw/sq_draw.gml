@@ -44,77 +44,21 @@ function sq_actor_draw(_x, _y, _colour, _aim, _stride, _roll, _flash) {
 }
 
 function sq_scene_draw(_g) {
-    draw_clear($1D1510);
-    // Quiet tile floor, with brighter bullets and silhouettes drawn above it.
-    sq_rect(16, 48, 623, 312, $36251A);
-    sq_rect(23, 68, 616, 306, $413529);
-    for (var _tx = 24; _tx < 616; _tx += 16) {
-        for (var _ty = 70; _ty < 306; _ty += 16) {
-            sq_rect(_tx, _ty, _tx + 14, _ty + 14, ((_tx + _ty) div 16) mod 2 ? $41372D : $453B31);
-            if ((_tx * 7 + _ty) mod 5 == 0) sq_rect(_tx + 5, _ty + 4, _tx + 6, _ty + 4, $4B4034);
-        }
-    }
-    sq_rect(16, 48, 623, 67, $2B1B19);
-    sq_rect(20, 49, 619, 51, $91614D);
-    sq_rect(16, 68, 22, 311, $3B2620);
-    sq_rect(617, 68, 623, 311, $3B2620);
-    sq_rect(22, 307, 617, 313, $291B16);
-    sq_rect(28, 52, 145, 64, $332122);
-    sq_text(34, 55, "LAST STOP", $73EAC1, 1);
-    sq_text(246, 55, "OPEN LATE. BAD IDEA.", $AE9B86, 1);
-    sq_text(541, 55, "ICE $4", $F2DE9C, 1);
-    // Room exit is visibly locked until every threat is defeated.
-    sq_rect(15, 163, 27, 213, $1C1417);
-    sq_rect(17, 167, 22, 209, _g.mode == "cleared" ? $93F0A2 : $927DEB);
-    if (_g.mode != "cleared") {
-        for (var _bar = 170; _bar < 210; _bar += 8) sq_rect(16, _bar, 27, _bar + 2, $E6A4FF);
-    }
-    for (var _i = 0; _i < array_length(_g.obstacles); ++_i) {
-        var _o = _g.obstacles[_i];
-        if (_o.kind == "crate") {
-            if (_o.hp == 0) {
-                sq_rect(_o.x1 + 2, _o.y1 + 6, _o.x1 + 9, _o.y1 + 8, $586479);
-                sq_rect(_o.x2 - 7, _o.y2 - 5, _o.x2, _o.y2 - 3, $586479);
-                continue;
-            }
-            sq_rect(_o.x1 - 1, _o.y1 + 3, _o.x2 + 3, _o.y2 + 4, $241A17);
-            sq_rect(_o.x1, _o.y1, _o.x2, _o.y2, $526983);
-            sq_outline(_o.x1 + 2, _o.y1 + 2, _o.x2 - 2, _o.y2 - 2, $87A4BA);
-            sq_rect(_o.x1 + 8, _o.y1, _o.x1 + 11, _o.y2, $92B2CA);
-        } else {
-            sq_rect(_o.x1 - 2, _o.y1 + 3, _o.x2 + 4, _o.y2 + 5, $2B211B);
-            sq_rect(_o.x1, _o.y1, _o.x2, _o.y2, $282321);
-            sq_rect(_o.x1 + 2, _o.y1 + 2, _o.x2 - 2, _o.y2 - 3, $594634);
-            for (var _row = 0; _row < 3; ++_row) {
-                var _sy = _o.y1 + 5 + _row * 12;
-                for (var _col = 0; _col < 6; ++_col) {
-                    var _sx = _o.x1 + 5 + _col * 7;
-                    var _c = [_o.y1 == 108 ? $848E68 : $756296, $759B9B, $907674][(_row + _col) mod 3];
-                    sq_rect(_sx, _sy, _sx + 3, _sy + 6, _c);
-                    sq_rect(_sx, _sy, _sx + 3, _sy + 1, $BBADA3);
-                }
-                sq_rect(_o.x1 + 2, _sy + 8, _o.x2 - 2, _sy + 9, $97856C);
-            }
-        }
-    }
-    // Attack indicators remain visible over the environment.
-    for (var _i = 0; _i < array_length(_g.enemies); ++_i) {
-        var _e = _g.enemies[_i];
-        if (_e.state == "tell") {
-            draw_set_colour(_e.kind == "melee" ? $67BFFF : $AD8EFF);
-            draw_line(floor(_e.x), floor(_e.y), floor(_e.x + lengthdir_x(_e.kind == "melee" ? 60 : 100, _e.aim)),
-                floor(_e.y + lengthdir_y(_e.kind == "melee" ? 60 : 100, _e.aim)));
-            sq_text(_e.x - 2, _e.y - 28, "!", $E9ECFF, 1);
-        }
-    }
+    sq_environment_draw(_g);
     // Actors use feet for gameplay positions and are sorted by feet for overlap.
     var _actors = [];
+    for(var _j=0;_j<array_length(_g.obstacles);++_j) {
+        var _o=_g.obstacles[_j];
+        array_push(_actors,{who:{y:_o.y2},player:false,prop:_o});
+    }
     array_push(_actors, {who: _g.player, player: true});
     for (var _i = 0; _i < array_length(_g.enemies); ++_i)
         array_push(_actors, {who: _g.enemies[_i], player: false});
     array_sort(_actors, function(_a, _b) { return _a.who.y - _b.who.y; });
     for (var _i = 0; _i < array_length(_actors); ++_i) {
-        var _a = _actors[_i]; var _who = _a.who;
+        var _a = _actors[_i];
+        if(variable_struct_exists(_a,"prop")) {sq_environment_prop_draw(_a.prop,_g);continue;}
+        var _who = _a.who;
         var _colour = _a.player ? $CBCE65 : (_who.kind == "melee" ? $668ADC : $AF72BD);
         if (_a.player) sq_hypeman_draw(_g);
         else sq_actor_draw(_who.x, _who.y, _colour, _who.aim, _who.stride, false, _who.flash > 0);
@@ -127,6 +71,16 @@ function sq_scene_draw(_g) {
             sq_rect(_who.x - 8, _who.y - 22, _who.x - 8 + 16 * _who.hp / _who.max_hp, _who.y - 21, $BBB1FF);
         }
         if (!_a.player && _who.stun > 0) sq_text(_who.x - 3, _who.y - 28, "*", $C0F5FF, 1);
+    }
+    // Attack indicators remain visible over the environment.
+    for (var _i = 0; _i < array_length(_g.enemies); ++_i) {
+        var _e = _g.enemies[_i];
+        if (_e.state == "tell") {
+            draw_set_colour(_e.kind == "melee" ? $67BFFF : $AD8EFF);
+            draw_line(floor(_e.x), floor(_e.y), floor(_e.x + lengthdir_x(_e.kind == "melee" ? 60 : 100, _e.aim)),
+                floor(_e.y + lengthdir_y(_e.kind == "melee" ? 60 : 100, _e.aim)));
+            sq_text(_e.x - 2, _e.y - 28, "!", $E9ECFF, 1);
+        }
     }
     for (var _i = 0; _i < array_length(_g.bullets); ++_i) {
         var _b = _g.bullets[_i];
@@ -229,4 +183,75 @@ function sq_overlay(_g) {
             : "ENTER  " + (_g.mode == "briefing" ? "ENTER THE STORE" : "TRY AGAIN"), $241911, 1);
     }
     sq_text(140, 293, "HYPE MAN V7  /  FIRST COMBAT ROOM  /  NO SAVED PROGRESS", $7F766B, 1);
+}
+
+/// Approved Last Stop layout: coordinates are native pixels; bounds are ground footprints.
+function sq_environment_layout() {
+    return [
+        {x1:202,y1:164,x2:237,y2:245,kind:"shelf",hp:-1,art:"shelf_left",draw_x:199,draw_y:144},
+        {x1:384,y1:164,x2:417,y2:245,kind:"shelf",hp:-1,art:"shelf_right",draw_x:381,draw_y:144},
+        {x1:64,y1:112,x2:172,y2:138,kind:"counter",hp:-1,art:"",draw_x:64,draw_y:100},
+        {x1:382,y1:108,x2:575,y2:114,kind:"fridges",hp:-1,art:"",draw_x:382,draw_y:67},
+        {x1:290,y1:192,x2:312,y2:212,kind:"crate",hp:4,art:"crate",draw_x:288,draw_y:182},
+        {x1:30,y1:268,x2:104,y2:306,kind:"stock",hp:-1,art:"",draw_x:30,draw_y:266},
+        {x1:582,y1:272,x2:613,y2:306,kind:"stock",hp:-1,art:"",draw_x:582,draw_y:272},
+        {x1:601,y1:178,x2:616,y2:270,kind:"stock",hp:-1,art:"",draw_x:601,draw_y:178},
+        {x1:30,y1:232,x2:43,y2:268,kind:"stock",hp:-1,art:"",draw_x:30,draw_y:232},
+        {x1:594,y1:114,x2:616,y2:163,kind:"stock",hp:-1,art:"",draw_x:594,draw_y:114}
+    ];
+}
+function sq_environment_init() {
+    var _names=["background","shelf_left","shelf_right","crate"];
+    var _files=["Room","Shelf-Left","Shelf-Right","Crate"];
+    global.sq_environment={};
+    for(var _i=0;_i<array_length(_names);++_i) {
+        var _s=sprite_add("environment-v2/"+_files[_i]+".png",1,false,false,0,0);
+        if(_s<0) show_error("Missing Last Stop environment asset: "+_files[_i],true);
+        variable_struct_set(global.sq_environment,_names[_i],_s);
+    }
+}
+function sq_environment_cleanup() {
+    if(!variable_global_exists("sq_environment")) return;
+    var _keys=variable_struct_get_names(global.sq_environment);
+    for(var _i=0;_i<array_length(_keys);++_i) {
+        var _s=variable_struct_get(global.sq_environment,_keys[_i]);
+        if(sprite_exists(_s)) sprite_delete(_s);
+    }
+}
+function sq_environment_draw(_g) {
+    draw_clear(make_colour_rgb(13,18,32));
+    draw_sprite_ext(global.sq_environment.background,0,0,0,0.5,0.5,0,c_white,1);
+    // Preserve the approved OPEN sign; only the actual combat lock is dynamic.
+    if(_g.mode!="cleared") for(var _y=169;_y<209;_y+=8) {
+        sq_rect(16,_y,27,_y+2,make_colour_rgb(247,170,213));
+        sq_rect(17,_y,25,_y,make_colour_rgb(255,214,232));
+    }
+    // Local, restrained glints layered onto the approved lamp/fridge pixels.
+    draw_set_alpha(0.035+0.015*(floor(_g.time*2) mod 3));
+    sq_rect(538,78,567,79,make_colour_rgb(167,250,255));
+    sq_rect(115,95,120,99,make_colour_rgb(255,220,140));
+    draw_set_alpha(1);
+}
+function sq_environment_prop_draw(_o,_g) {
+    if(_o.hp==0) {
+        sq_rect(_o.x1+2,_o.y2-3,_o.x1+9,_o.y2-1,make_colour_rgb(128,91,67));
+        sq_rect(_o.x2-8,_o.y2-5,_o.x2-2,_o.y2-3,make_colour_rgb(174,132,91));return;
+    }
+    if(_o.art=="") return;
+    // A tall shelf may overlap actors in the walkable lane behind it.
+    draw_set_alpha(sq_environment_prop_occludes(_o,_g) ? 0.42 : 1);
+    draw_sprite_ext(variable_struct_get(global.sq_environment,_o.art),0,_o.draw_x,_o.draw_y,0.5,0.5,0,c_white,draw_get_alpha());
+    draw_set_alpha(1);
+
+}
+
+function sq_environment_prop_occludes(_o,_g) {
+ if(_o.art=="" || _o.hp==0) return false;
+ var _all=[_g.player];
+ for(var _i=0;_i<array_length(_g.enemies);++_i) array_push(_all,_g.enemies[_i]);
+ for(var _i=0;_i<array_length(_all);++_i) {
+  var _a=_all[_i];
+  if(_a.x+10>_o.x1 && _a.x-10<_o.x2 && _a.y>=_o.draw_y && _a.y<_o.y1) return true;
+ }
+ return false;
 }

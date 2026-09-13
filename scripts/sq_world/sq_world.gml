@@ -1,22 +1,17 @@
 function sq_new_game() {
     var _cfg = sq_config();
     return {
+        bounds:{left:44,top:116,right:600,bottom:306},
         cfg: _cfg, mode: "briefing", time: 0, kills: 0, damage_taken: 0,
         shots: 0, hits: 0, nav_time: 0, nav: [], effects: [], bullets: [],
         player: {x: 88, y: 180, radius: _cfg.player_radius, aim: 0,
             hp: _cfg.health, ammo: _cfg.magazine, reload: 0, fire: 0,
             roll: 0, roll_dir: 0, roll_cooldown: 0, hurt: 0, hype: 0,
             active: 0, flash: 0, stride: 0, anim: sq_animation_state()},
-        obstacles: [
-            {x1: 176, y1: 108, x2: 224, y2: 152, kind: "shelf", hp: -1},
-            {x1: 176, y1: 222, x2: 224, y2: 266, kind: "shelf", hp: -1},
-            {x1: 376, y1: 108, x2: 424, y2: 152, kind: "shelf", hp: -1},
-            {x1: 376, y1: 222, x2: 424, y2: 266, kind: "shelf", hp: -1},
-            {x1: 290, y1: 178, x2: 310, y2: 198, kind: "crate", hp: 4}
-        ],
-        enemies: [sq_enemy(520, 98, "ranged", 0.8),
+        obstacles: sq_environment_layout(),
+        enemies: [sq_enemy(520, 136, "ranged", 0.8),
             sq_enemy(544, 264, "ranged", 1.7),
-            sq_enemy(294, 84, "melee", 0),
+            sq_enemy(294, 128, "melee", 0),
             sq_enemy(312, 286, "melee", 0.4),
             sq_enemy(480, 184, "melee", 0.8)]
     };
@@ -40,7 +35,7 @@ function sq_obstacle_at(_g, _x, _y, _r) {
 }
 
 function sq_blocked(_g, _x, _y, _r) {
-    return _x - _r < 24 || _x + _r > 616 || _y - _r < 70 || _y + _r > 306
+    return _x - _r < _g.bounds.left || _x + _r > _g.bounds.right || _y - _r < _g.bounds.top || _y + _r > _g.bounds.bottom
         || sq_obstacle_at(_g, _x, _y, _r) != -1;
 }
 

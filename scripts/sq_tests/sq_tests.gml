@@ -5,7 +5,16 @@ function sq_check(_condition, _label) {
 }
 
 function sq_test_game() {
-    var _g = sq_new_game(); _g.mode = "combat"; return _g;
+    var _g = sq_new_game(); _g.mode = "combat";
+    _g.bounds={left:24,top:70,right:616,bottom:306};
+    _g.obstacles=[
+            {x1: 176, y1: 108, x2: 224, y2: 152, kind: "shelf", hp: -1},
+            {x1: 176, y1: 222, x2: 224, y2: 266, kind: "shelf", hp: -1},
+            {x1: 376, y1: 108, x2: 424, y2: 152, kind: "shelf", hp: -1},
+            {x1: 376, y1: 222, x2: 424, y2: 266, kind: "shelf", hp: -1},
+            {x1: 290, y1: 178, x2: 310, y2: 198, kind: "crate", hp: 4}
+        ];
+    return _g;
 }
 
 function sq_self_tests() {
@@ -118,5 +127,36 @@ function sq_self_tests() {
         && _g.kills == 0 && _g.player.active == 0 && array_length(_g.bullets) == 0,
         "restart resets combat state");
     sq_animation_tests();
+    sq_environment_tests();
+    sq_compact_tests();
     show_debug_message("SQ_TEST_RESULTS pass=" + string(global.sq_pass) + " fail=" + string(global.sq_fail));
+}
+
+function sq_environment_tests() {
+ var _g=sq_new_game();sq_build_nav(_g);
+ sq_check(!sq_blocked(_g,_g.player.x,_g.player.y,_g.player.radius),"store player spawn is clear");
+ for(var _i=0;_i<array_length(_g.enemies);++_i) {
+  var _e=_g.enemies[_i];
+  sq_check(!sq_blocked(_g,_e.x,_e.y,_e.radius) && _g.nav[floor(_e.x/16)+floor(_e.y/16)*40]>=0,"store enemy spawn reachable "+string(_i));
+ }
+ var _routes=[[168,152],[168,248],[280,152],[344,248],[456,152],[552,280]];
+ for(var _i=0;_i<array_length(_routes);++_i) {
+  var _p=_routes[_i];sq_check(_g.nav[floor(_p[0]/16)+floor(_p[1]/16)*40]>=0,"store aisle connected "+string(_i));
+ }
+ _g.player.x=180;_g.player.y=190;sq_move(_g,_g.player,120,0);
+ sq_check(_g.player.x<=196,"store shelf footprint blocks movement");
+ _g=sq_new_game();_g.enemies=[sq_enemy(280,190,"melee",0)];
+ sq_spawn_bullet(_g,180,190,0,5000,"player",20);sq_bullets_step(_g,1/30);
+ sq_check(_g.enemies[0].hp==6 && array_length(_g.bullets)==0,"store shelf blocks fast bullets");
+ _g=sq_new_game();sq_spawn_bullet(_g,280,200,0,500,"player",4);sq_bullets_step(_g,0.08);
+ sq_check(_g.obstacles[4].hp==0 && sq_obstacle_at(_g,306,200,2)==-1,"store carton destruction clears collision");
+ _g=sq_new_game();sq_check(_g.obstacles[4].hp==4,"store restart restores carton");
+ _g=sq_new_game();_g.player.x=224;_g.player.y=150;
+ sq_check(sq_environment_prop_occludes(_g.obstacles[0],_g),"tall shelf fades for player behind it");
+ _g.player.y=260;sq_check(!sq_environment_prop_occludes(_g.obstacles[0],_g),"shelf stays opaque for player in front");
+ _g.enemies=[sq_enemy(224,150,"ranged",0)];sq_check(sq_environment_prop_occludes(_g.obstacles[0],_g),"tall shelf fades for enemy behind it");
+ _g=sq_new_game();_g.player.x=520;_g.player.y=180;_g.enemies=[sq_enemy(120,180,"melee",0)];sq_build_nav(_g);
+ repeat(360) sq_enemies_step(_g,1/60);
+ sq_check(point_distance(_g.enemies[0].x,_g.enemies[0].y,520,180)<220,"enemy pursues around new aisle islands");
+ sq_check(sprite_get_width(global.sq_environment.background)==1280 && sprite_get_height(global.sq_environment.background)==720,"detailed environment dimensions loaded");
 }
