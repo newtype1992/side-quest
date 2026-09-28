@@ -1,5 +1,15 @@
 # Prototype validation
 
+## Current baseline — 13 September 2026
+
+The approved room and compact Hype Man proof compiled on GameMaker LTS 2026.0.0.23. The latest pre-publication run passed **94 checks, zero failures**, plus the input-adapter check and runtime smoke test. Its log is `work/test-f253f53a99014cfda91ba41eb88d505e.log`. Actual game captures use 1280 × 720 rendering with 640 × 360 gameplay coordinates. The user approved the room and compact idle/run/fire/dodge visuals.
+
+Native character asset checks verified 100 frames, 24 clips, 16 colors, binary alpha and clear canvas margins. Five animation finishing groups and a recorded physical-controller/keyboard playtest remain; see [PROJECT_CHECKPOINT.md](PROJECT_CHECKPOINT.md). The tests do not establish feel, enjoyment or finished character production.
+
+## Historical initial baseline — 12 September 2026
+
+The sections below record the initial prototype and its then-current limitations. Their 34-test count and temporary-art descriptions are historical, not the current build status.
+
 Validation date: September 12, 2026. Runtime: GameMaker LTS 2026.0.0.23, Windows x64 VM.
 
 ## Verified

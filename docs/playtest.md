@@ -1,4 +1,6 @@
-# First combat playtest
+# Combat milestone playtest
+
+Current scope: approved Last Stop environment and compact Hype Man v8. See [PROJECT_CHECKPOINT.md](PROJECT_CHECKPOINT.md). A visual approval is recorded; this form still needs a physical-device playtest.
 
 Use this after compiling the current project. Test several attempts with keyboard/mouse and then with a physical controller. Record your initial reaction before tuning. The aim is to discover one concrete issue to fix next.
 
@@ -39,3 +41,21 @@ Proposed single tuning change: ______
 Result after repeating the same input device and encounter: ______
 
 Keep balance observations separate from bugs. Preserve a working version before changing the tuning values. Do not expand content until both input devices meet the combat gate in the production plan.
+
+## Compact character completion checks
+
+Run after the five finishing animation groups are integrated. Mark unfinished groups as pending rather than passing their current fallback poses.
+
+- [ ] Feet and shadow remain anchored across idle/run/aim changes at gameplay size.
+- [ ] Fire and reload read correctly in every aim direction, while standing and moving.
+- [ ] Dodge interrupts/rejoins reload cleanly; gun hides during the tucked roll and returns without a pop.
+- [ ] Hit reaction is clear without freezing movement or overriding roll/death incorrectly.
+- [ ] Make Some Noise gesture matches its pulse; On a Roll effects fit the body and do not hide bullets.
+- [ ] Death recoils backward, falls and holds a grounded pose in every view; restart resets animation state.
+- [ ] Shelves occlude/fade correctly around the character and its weapon/effects.
+
+Animation issues and reproduction steps: ______
+
+Milestone decision (ready / needs another pass): ______
+
+Reason and exact next fix: ______
