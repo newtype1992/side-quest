@@ -14,6 +14,8 @@ game = sq_new_game();
 paused = false;
 pad_slot = -1;
 input_device = "KEYBOARD";
+input_debug = false;
+debug_input_fire = false;
 last_mouse_x = mouse_x;
 last_mouse_y = mouse_y;
 test_mode = false;
@@ -36,6 +38,13 @@ if (test_mode) {
     sq_self_tests();
     var _hardware = sq_read_input();
     show_debug_message("SQ_INPUT_ADAPTER_PASS controller_slot=" + string(pad_slot));
+    if (pad_slot != -1) {
+        show_debug_message("SQ_PAD_DESCRIPTION " + gamepad_get_description(pad_slot));
+        show_debug_message("SQ_PAD_MAPPING " + gamepad_get_mapping(pad_slot));
+        show_debug_message("SQ_PAD_RT_VALUE " + string(gamepad_button_value(pad_slot, gp_shoulderrb)));
+    }
+    for (var _slot = 0; _slot < gamepad_get_device_count(); ++_slot)
+        if (gamepad_is_connected(_slot)) show_debug_message("SQ_PAD_SLOT " + string(_slot) + " " + gamepad_get_description(_slot));
     game.mode = "combat";
 }
 if (capture_mode) {
@@ -67,4 +76,9 @@ if (capture_mode) {
     if (capture_scene == "destroyed") { game.obstacles[4].hp=0; game.mode="combat"; }
     if (capture_scene == "paused") paused = true;
     if (capture_scene == "controller") input_device = "CONTROLLER";
+    if (capture_scene == "input-diagnostic") {
+        input_debug = true;
+        var _diagnostic_input = sq_read_input();
+        debug_input_fire = _diagnostic_input.fire;
+    }
 }

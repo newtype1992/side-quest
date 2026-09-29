@@ -4,7 +4,7 @@ Checkpoint: 29 September 2026. Read the current action pass in [hypeman-v9-actio
 
 ## Current work
 
-The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. Moving reload, hit, and ability actions now retain animated run legs. The v8 approved master is preserved. The latest build passes 108 checks plus input-adapter and runtime smoke checks. Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`. The creator approved the reload animation in play. A Scuf playtest then exposed a controller-to-mouse switching defect; the code fix is validated automatically and awaits a repeat on the physical controller. Other action visuals and full keyboard/controller playtests remain pending, so the combat-ready character gate is not yet approved.
+The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. Moving reload, hit, and ability actions now retain animated run legs. The v8 approved master is preserved. The latest build passes 108 checks plus input-adapter and runtime smoke checks. Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`. The creator approved the reload animation in play. The Scuf RT still fails to fire after the input-priority fix; an F2 diagnostic overlay is ready to identify its live trigger signal. See [controller-rt-diagnostic.md](controller-rt-diagnostic.md). Other action visuals and full keyboard/controller playtests remain pending, so the combat-ready character gate is not yet approved.
 
 ## Approved baseline from 13 September 2026
 

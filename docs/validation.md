@@ -6,6 +6,8 @@ The v9 action pass compiled in GameMaker LTS 2026.0.0.23 and passed 108 gameplay
 
 The 29 September Scuf playtest exposed a device-switching defect: mouse movement could override controller trigger activity in the same frame, leaving fire mapped to the mouse. Explicit controller buttons now take priority over pointer movement; explicit keyboard/mouse actions can still switch back. Regression checks cover both directions and idle stability. Latest log: `work/test-92e7ccc488bc4b83944550ba3882e035.log`. A repeat test on the actual Scuf controller is still required to confirm the reported symptom is resolved.
 
+The repeat Scuf test still failed to fire with RT. A live F2 input diagnostic was added so the pressed trigger's mapped and raw values can be observed; see [controller-rt-diagnostic.md](controller-rt-diagnostic.md). The arbitration fix remains valid for its tested case, but it did not resolve this controller's reported RT behavior.
+
 ## Current baseline — 13 September 2026
 
 The approved room and compact Hype Man proof compiled on GameMaker LTS 2026.0.0.23. The latest pre-publication run passed **94 checks, zero failures**, plus the input-adapter check and runtime smoke test. Its log is `work/test-f253f53a99014cfda91ba41eb88d505e.log`. Actual game captures use 1280 × 720 rendering with 640 × 360 gameplay coordinates. The user approved the room and compact idle/run/fire/dodge visuals.

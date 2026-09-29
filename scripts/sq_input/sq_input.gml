@@ -79,3 +79,34 @@ function sq_read_input() {
     _input.confirm = keyboard_check_pressed(vk_enter) || _pad_confirm;
     return _input;
 }
+
+function sq_input_diagnostic_draw() {
+    sq_rect(8, 49, 632, 315, make_colour_rgb(12, 18, 28));
+    sq_outline(8, 49, 632, 315, make_colour_rgb(69, 214, 237));
+    sq_text(16, 56, "CONTROLLER INPUT / F2 CLOSE", make_colour_rgb(233, 235, 223), 1);
+    sq_text(16, 69, "SELECTED " + input_device + "  SLOT " + string(pad_slot)
+        + "  GAME FIRE " + string(debug_input_fire), make_colour_rgb(69, 214, 237), 1);
+    if (pad_slot == -1 || !gamepad_is_connected(pad_slot)) {
+        sq_text(16, 86, "NO CONNECTED CONTROLLER", make_colour_rgb(233, 235, 223), 1);
+        return;
+    }
+    sq_text(16, 83, gamepad_get_description(pad_slot), make_colour_rgb(158, 172, 183), 1);
+    sq_text(16, 98, "RT " + string_format(gamepad_button_value(pad_slot, gp_shoulderrb), 1, 2)
+        + "  RB " + string_format(gamepad_button_value(pad_slot, gp_shoulderr), 1, 2)
+        + "  LT " + string_format(gamepad_button_value(pad_slot, gp_shoulderlb), 1, 2)
+        + "  MOUSE " + string(mouse_check_button(mb_left)), make_colour_rgb(233, 235, 223), 1);
+    sq_text(16, 115, "RAW AXES", make_colour_rgb(69, 214, 237), 1);
+    for (var _i = 0; _i < min(8, gamepad_axis_count(pad_slot)); ++_i) {
+        var _x = 16 + (_i mod 4) * 150;
+        var _y = 129 + floor(_i / 4) * 13;
+        sq_text(_x, _y, "A" + string(_i) + " " + string_format(gamepad_axis_value(pad_slot, _i), 1, 2),
+            make_colour_rgb(233, 235, 223), 1);
+    }
+    sq_text(16, 163, "RAW BUTTONS", make_colour_rgb(69, 214, 237), 1);
+    for (var _i = 0; _i < min(20, gamepad_button_count(pad_slot)); ++_i) {
+        var _x = 16 + floor(_i / 10) * 300;
+        var _y = 177 + (_i mod 10) * 12;
+        sq_text(_x, _y, "B" + string(_i) + " " + string_format(gamepad_button_value(pad_slot, _i), 1, 2),
+            make_colour_rgb(233, 235, 223), 1);
+    }
+}

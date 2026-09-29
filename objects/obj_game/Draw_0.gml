@@ -5,3 +5,4 @@ if (capture_mode && string_pos("animation-", capture_scene) == 1) {
 sq_scene_draw(game);
 sq_hud_draw(game);
 sq_overlay(game);
+if (input_debug) sq_input_diagnostic_draw();
