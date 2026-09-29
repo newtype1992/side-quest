@@ -247,7 +247,11 @@ function sq_animation_gallery(_scene) {
             _p.anim.death = _scene == "animation-death-start" ? 0 : (_scene == "animation-death-fall" ? 160 : 700);
             _p.anim.death_facing = _face;
         }
-        if (_scene == "animation-hit") _p.anim.hit = 15;
+        if (_scene == "animation-hit") {
+            _p.anim.hit = 15;
+            _p.anim.hit_facing = _face;
+            _p.anim.hit_dir = _angles[_i];
+        }
         sq_hypeman_draw(_g);
         var _x = _i * 160 + 8; var _y = 100;
         sq_text(_x + 34, 78, _labels[_i], $BBC7D2, 1);

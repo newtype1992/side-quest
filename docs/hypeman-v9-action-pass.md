@@ -34,6 +34,7 @@ The action source is [Hype-Man-v9-Actions.aseprite](../art/hypeman-v8-proof/Hype
 - Four-view engine captures of the [reload start](../art/hypeman-v8-proof/review-v9/game-renders/animation-reload-start.png), magazine contact, and [return to aim](../art/hypeman-v8-proof/review-v9/game-renders/animation-reload-ready.png) verify that all three source poses reach the runtime in the intended order.
 - A dedicated [On a Roll room capture](../art/hypeman-v8-proof/review-v9/game-renders/hype.png) exposed motes that were too small and rendered yellow because of GameMaker's colour-literal ordering. The revised effect uses explicit RGB values and larger cyan/white clusters. Bullets draw later than the character effect, retaining their visibility.
 - Actual GameMaker [moving reload](../art/hypeman-v8-proof/review-v9/game-renders/reload-moving.png) and [moving ability](../art/hypeman-v8-proof/review-v9/game-renders/ability-moving.png) captures show the action/run-leg composition in the room. Refreshed four-view [reload](../art/hypeman-v8-proof/review-v9/game-renders/animation-reload.png) and [ability](../art/hypeman-v8-proof/review-v9/game-renders/animation-noise.png) captures show its character-scale join. Still frames cannot establish live movement feel.
+- The four-view hit fixture originally reused the right-facing hit latch for every label. It now sets each view's actual hit facing and impact direction. The corrected [engine hit gallery](../art/hypeman-v8-proof/review-v9/game-renders/animation-hit.png) shows distinct right, front, left, and back poses. The correction passed the 105-check suite, input adapter, and runtime smoke test again; log: `work/test-0ed7158004b147539cae1168a5b9f2c9.log`.
 
 ## What still needs judgment
 
@@ -50,5 +51,6 @@ The action source is [Hype-Man-v9-Actions.aseprite](../art/hypeman-v8-proof/Hype
 5. Keep technical validation, visual acceptance, and physical input feel as separate gates. Record which one each piece of evidence supports.
 6. Capture world-space effects in the actual room. A character-only gallery omits them, and GameMaker colour literals can differ from a hex code's usual RGB reading; use explicit RGB construction for critical cues.
 7. Check whether a full-body action pose holds the feet still while gameplay movement continues. Compose upper-body actions with locomotion legs when moving, then inspect the join at game scale and test the action timing separately.
+8. Validate review fixtures as carefully as gameplay. Direction labels alone do not prove that a latched action state selected the corresponding sprite; initialize the latch for each view before capturing.
 
 Newtype method used: game development lifecycle in production and testing; pixel-art animation production for timed action keys; GameMaker art integration for native export and runtime review. Runtime skills used: `pixel-art-animation-skill` and `gamemaker-art-integration-skill`. No Newtype agent was used.
