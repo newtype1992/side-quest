@@ -38,9 +38,10 @@ The action source is [Hype-Man-v9-Actions.aseprite](../art/hypeman-v8-proof/Hype
 
 ## What still needs judgment
 
-- Review the timed Reload, Hit, Noise, and Death previews alongside the four-view GameMaker captures at the actual 2× game display. In particular, judge the readability of the magazine contact, the force of the hit, the backward fall, and whether the compact cyan buff motes are clear without distracting from hostile bullets.
+- Creator feedback on 29 September: the reload animation looks good in play. Treat its current visual as accepted; keep the movement and dodge-interruption checks in the transition playtest.
+- Review Hit, Make Some Noise, On a Roll, and Death in live play at the actual 2× game display. In particular, judge the force and direction of the hit, whether the ability gesture reads during movement, whether cyan buff motes distract from hostile bullets, and whether the backward fall finishes in a convincing grounded pose.
 - Play several attempts on keyboard/mouse and a physical controller. Verify reload while moving, dodge interruption, turning aim during an action, hit reactions during reload, ability-to-fire response, damage readability, shelf occlusion, death and restart. Record concrete issues in [playtest.md](playtest.md).
-- Creator visual approval has not yet been recorded. Automated checks and still captures cannot establish animation feel or match a reference game's quality.
+- Overall creator visual approval has not yet been recorded. Reload has been accepted; the other actions and transitions remain pending. Automated checks and still captures cannot establish animation feel or match a reference game's quality.
 
 ## Process improvements to carry forward
 
