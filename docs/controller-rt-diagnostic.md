@@ -4,7 +4,7 @@
 
 GameMaker LTS identifies the connected device as `XInput STANDARD GAMEPAD` in slot 0. The idle `gp_shoulderrb` value is 0. GameMaker's documented right-trigger constant is `gp_shoulderrb`, and `gamepad_button_value` reports its raw analog value without applying the configured button threshold. These facts do not show what happens when the Scuf RT is pressed.
 
-Press F2 while running `Play.cmd` to open the input diagnostic. Capture one screenshot with RT released and one while holding RT. The panel shows the selected input device, gameplay fire command, mapped RT/RB/LT values, raw axes, and raw buttons. F2 closes it. Compare the two screenshots:
+Press F2 while running `Play.cmd` to open the input diagnostic. Capture one screenshot with RT released and one while holding RT. The panel shows the selected input device, gameplay fire command, pause/focus state, mapped RT/RB/LT values, raw axes, and raw buttons. F2 closes it. The game intentionally pauses after losing window focus; click its window, then press Start/A or Enter to resume before judging input. Compare the two screenshots:
 
 - If mapped RT rises but `GAME FIRE` stays 0, correct the input-source or threshold logic.
 - If another raw button or axis changes while mapped RT stays 0, use the controller-specific mapping evidence to correct the binding.

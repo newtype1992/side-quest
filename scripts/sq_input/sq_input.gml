@@ -85,7 +85,10 @@ function sq_input_diagnostic_draw() {
     sq_outline(8, 49, 632, 315, make_colour_rgb(69, 214, 237));
     sq_text(16, 56, "CONTROLLER INPUT / F2 CLOSE", make_colour_rgb(233, 235, 223), 1);
     sq_text(16, 69, "SELECTED " + input_device + "  SLOT " + string(pad_slot)
-        + "  GAME FIRE " + string(debug_input_fire), make_colour_rgb(69, 214, 237), 1);
+        + "  GAME FIRE " + string(debug_input_fire)
+        + "  PAUSED " + string(paused) + "  FOCUS " + string(window_has_focus()),
+        make_colour_rgb(69, 214, 237), 1);
+    if (paused) sq_text(373, 83, "START/A OR ENTER TO RESUME", make_colour_rgb(233, 235, 223), 1);
     if (pad_slot == -1 || !gamepad_is_connected(pad_slot)) {
         sq_text(16, 86, "NO CONNECTED CONTROLLER", make_colour_rgb(233, 235, 223), 1);
         return;
