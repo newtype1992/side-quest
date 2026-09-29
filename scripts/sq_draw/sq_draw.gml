@@ -124,16 +124,9 @@ function sq_hud_draw(_g) {
         sq_rect(_hx, 24, _hx + 8, 30, _i < _p.hp ? $AD8DF4 : $443632);
         sq_rect(_hx + 2, 22, _hx + 6, 32, _i < _p.hp ? $AD8DF4 : $443632);
     }
-    sq_text(290, 8, "POCKET PISTOL", $B0B6B5, 1);
-    sq_text(290, 24, string(_p.ammo) + "/8", $E8E4D6, 1);
-    sq_text(321, 24, _p.reload > 0 ? "RELOADING" : "UNLIMITED RESERVE", _p.reload > 0 ? $A8F4FF : $817C78, 1);
-    if (_p.reload > 0) {
-        sq_rect(290, 35, 422, 36, $4C3933);
-        sq_rect(290, 35, 290 + 132 * (1 - _p.reload / _g.cfg.reload_time), 36, $A8F4FF);
-    }
-    sq_text(462, 8, "MAKE SOME NOISE", $B0B6B5, 1);
-    sq_text(462, 24, _p.active <= 0 ? "READY" : string(ceil(_p.active)) + "S", _p.active <= 0 ? $A8F4B8 : $99897D, 1);
-    sq_text(550, 24, string(array_length(_g.enemies)) + " THREATS", $B0B6B5, 1);
+    sq_text(290, 8, "MAKE SOME NOISE", $B0B6B5, 1);
+    sq_text(290, 24, _p.active <= 0 ? "READY" : string(ceil(_p.active)) + "S", _p.active <= 0 ? $A8F4B8 : $99897D, 1);
+    sq_text(462, 24, string(array_length(_g.enemies)) + " THREATS", $B0B6B5, 1);
     sq_rect(16, 319, 623, 337, $2C211D);
     sq_text(23, 324, "GROUP CHAT", $CBCE65, 1);
     sq_text(101, 324, _g.mode == "cleared" ? "THE PLANNER: GREAT. NOW ACTUALLY BUY THE ICE." : "THE PLANNER: JUST GRAB ICE. HOW HARD CAN IT BE?", $BBB4A3, 1);
@@ -141,10 +134,43 @@ function sq_hud_draw(_g) {
         ? "LS MOVE  RS AIM  RT FIRE  A/LB DODGE  X RELOAD  RB NOISE  START PAUSE"
         : "WASD MOVE  MOUSE AIM  LMB FIRE  SPACE/RMB DODGE  R RELOAD  E NOISE  ESC PAUSE";
     sq_text(16, 346, _hint, $AA9D8D, 1);
+    sq_weapon_hud_draw(_g);
+    if (_p.reload > 0 && _p.hp > 0 && _g.mode == "combat") sq_reload_bar_draw(_g);
     if (_p.roll_cooldown > 0) {
         sq_rect(_p.x - 9, _p.y + 12, _p.x + 9, _p.y + 13, $4C3933);
         sq_rect(_p.x - 9, _p.y + 12, _p.x - 9 + 18 * (1 - _p.roll_cooldown / _g.cfg.roll_cooldown), _p.y + 13, $CBCE65);
     }
+}
+
+function sq_reload_bar_draw(_g) {
+    var _p = _g.player;
+    var _x = clamp(floor(_p.x) - 21, 8, 590);
+    var _y = max(49, floor(_p.y) - 53);
+    var _progress = clamp(1 - _p.reload / _g.cfg.reload_time, 0, 1);
+    sq_rect(_x - 2, _y - 2, _x + 43, _y + 5, make_colour_rgb(16, 23, 34));
+    sq_outline(_x - 1, _y - 1, _x + 42, _y + 4, make_colour_rgb(233, 235, 223));
+    sq_rect(_x, _y, _x + 41, _y + 3, make_colour_rgb(46, 57, 66));
+    var _filled = floor(42 * _progress);
+    if (_filled > 0) sq_rect(_x, _y, _x + _filled - 1, _y + 3, make_colour_rgb(69, 214, 237));
+}
+
+function sq_weapon_hud_draw(_g) {
+    var _p = _g.player;
+    // Original Pocket Pistol silhouette, drawn on the same native pixel grid as the HUD.
+    sq_rect(500, 269, 623, 314, make_colour_rgb(16, 23, 34));
+    sq_outline(500, 269, 623, 314, make_colour_rgb(84, 101, 113));
+    sq_rect(505, 274, 547, 306, make_colour_rgb(33, 46, 59));
+    sq_rect(509, 283, 546, 291, make_colour_rgb(7, 8, 12));
+    sq_rect(511, 284, 540, 288, make_colour_rgb(158, 172, 183));
+    sq_rect(516, 282, 534, 283, make_colour_rgb(233, 235, 223));
+    sq_rect(538, 285, 549, 287, make_colour_rgb(158, 172, 183));
+    sq_rect(516, 289, 528, 292, make_colour_rgb(71, 84, 94));
+    sq_rect(518, 293, 527, 302, make_colour_rgb(7, 8, 12));
+    sq_rect(520, 293, 525, 300, make_colour_rgb(103, 73, 47));
+    sq_text(556, 275, "POCKET", make_colour_rgb(158, 172, 183), 1);
+    sq_text(556, 284, "PISTOL", make_colour_rgb(233, 235, 223), 1);
+    sq_text(556, 299, string(_p.ammo) + "/" + string(_g.cfg.magazine),
+        _p.reload > 0 ? make_colour_rgb(69, 214, 237) : make_colour_rgb(233, 235, 223), 1);
 }
 
 function sq_overlay(_g) {
