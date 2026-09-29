@@ -18,11 +18,13 @@ This is an inference from those design statements, not a claim about Gungeon's e
 | On a Roll | Small cyan motes around the compact body replace the oversized v7 layers; the buff's gameplay duration and refresh are unchanged. |
 | Death | Four-view 80 ms recoil, 240 ms backward fall, and 380 ms grounded hold. The final pose stays on screen until restart. |
 
+While reload, hit, or Make Some Noise plays during movement, the renderer keeps the authored action upper body and uses the matching run-frame legs. Stationary actions retain their authored full-body poses. This keeps the hand gesture readable without making the character skate across the room.
+
 The action source is [Hype-Man-v9-Actions.aseprite](../art/hypeman-v8-proof/Hype-Man-v9-Actions.aseprite). The [original action reference sheet](../art/hypeman-v8-proof/action-reference-v9.png) was generated from the approved Hype Man model; [build-v9.lua](../art/hypeman-v8-proof/build-v9.lua) converts its poses to the 16-color native palette, fixed 48×48 canvas, and (24,44) foot origin. It appends the new clips without overwriting the v8 master. The runtime atlas and metadata are `datafiles/hypeman-v8-proof/Hype-Man-Actions.*`.
 
 ## Verification and review evidence
 
-- GameMaker LTS build, 103 gameplay and animation checks, input adapter check, and runtime smoke test passed on 29 September. Log: `work/test-2ba733f2de814318adf76e739d046dc3.log` (ignored local build output).
+- GameMaker LTS build, 105 gameplay and animation checks, input adapter check, and runtime smoke test passed on 29 September. Log: `work/test-da7d756daa0a41be86fbb50d1480edc7.log` (ignored local build output). The added checks cover moving reload legs and stationary authored feet.
 - The new atlas has 144 native frames and 40 named clips. Export checks enforce the palette, binary alpha and clear canvas margins. Timed source previews are in [review-v9](../art/hypeman-v8-proof/review-v9/).
 - An Aseprite pixel comparison found zero differences across all 100 approved v8 base frames in the new atlas.
 - A fresh Aseprite CLI export of the saved v9 master recovered all 144 frames and 40 tags; every tag range and frame duration matched the runtime metadata.
@@ -31,6 +33,7 @@ The action source is [Hype-Man-v9-Actions.aseprite](../art/hypeman-v8-proof/Hype
 - A timing review found the return-to-aim pose began 300 ms before the pistol was actually ready. It now begins 180 ms before readiness, leaving the reload hold visible longer while preserving the 900 ms gameplay rule.
 - Four-view engine captures of the [reload start](../art/hypeman-v8-proof/review-v9/game-renders/animation-reload-start.png), magazine contact, and [return to aim](../art/hypeman-v8-proof/review-v9/game-renders/animation-reload-ready.png) verify that all three source poses reach the runtime in the intended order.
 - A dedicated [On a Roll room capture](../art/hypeman-v8-proof/review-v9/game-renders/hype.png) exposed motes that were too small and rendered yellow because of GameMaker's colour-literal ordering. The revised effect uses explicit RGB values and larger cyan/white clusters. Bullets draw later than the character effect, retaining their visibility.
+- Actual GameMaker [moving reload](../art/hypeman-v8-proof/review-v9/game-renders/reload-moving.png) and [moving ability](../art/hypeman-v8-proof/review-v9/game-renders/ability-moving.png) captures show the action/run-leg composition in the room. Refreshed four-view [reload](../art/hypeman-v8-proof/review-v9/game-renders/animation-reload.png) and [ability](../art/hypeman-v8-proof/review-v9/game-renders/animation-noise.png) captures show its character-scale join. Still frames cannot establish live movement feel.
 
 ## What still needs judgment
 
@@ -46,5 +49,6 @@ The action source is [Hype-Man-v9-Actions.aseprite](../art/hypeman-v8-proof/Hype
 4. Capture both enlarged four-view frames and the real combat room. Enlarged art exposes stray pixels; the room reveals whether actions survive its lighting, scale, shelves and bullets.
 5. Keep technical validation, visual acceptance, and physical input feel as separate gates. Record which one each piece of evidence supports.
 6. Capture world-space effects in the actual room. A character-only gallery omits them, and GameMaker colour literals can differ from a hex code's usual RGB reading; use explicit RGB construction for critical cues.
+7. Check whether a full-body action pose holds the feet still while gameplay movement continues. Compose upper-body actions with locomotion legs when moving, then inspect the join at game scale and test the action timing separately.
 
 Newtype method used: game development lifecycle in production and testing; pixel-art animation production for timed action keys; GameMaker art integration for native export and runtime review. Runtime skills used: `pixel-art-animation-skill` and `gamemaker-art-integration-skill`. No Newtype agent was used.

@@ -4,7 +4,7 @@ Checkpoint: 29 September 2026. Read the current action pass in [hypeman-v9-actio
 
 ## Current work
 
-The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. The v8 approved master is preserved. The latest build passes 103 checks plus input-adapter and runtime smoke checks. Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`. Creator visual review and physical keyboard/controller playtests are still pending, so the combat-ready character gate is not yet approved. Continue with those reviews, fix any concrete readability or transition issue, then update this handoff and publish an accepted revision.
+The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. Moving reload, hit, and ability actions now retain animated run legs. The v8 approved master is preserved. The latest build passes 105 checks plus input-adapter and runtime smoke checks. Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`. Creator visual review and physical keyboard/controller playtests are still pending, so the combat-ready character gate is not yet approved. Continue with those reviews, fix any concrete readability or transition issue, then update this handoff and publish an accepted revision.
 
 ## Approved baseline from 13 September 2026
 
@@ -46,7 +46,7 @@ The five groups below were open at the v8 baseline. Each is now implemented in t
 
 After those five groups:
 
-- [x] Run the GameMaker suite and smoke test with new animation behavior covered: 103 checks passed.
+- [x] Run the GameMaker suite and smoke test with new animation behavior covered: 105 checks passed.
 - [ ] Review all transitions in live play: idle/run/fire/reload/hit/roll/active/buff/death/restart; check overlaps and action priority.
 - [ ] Review feet, shadow, pistol/muzzle, shelf occlusion and palette/alpha at gameplay size in all views.
 - [ ] Complete several keyboard/mouse and physical-controller attempts using docs/playtest.md. Record controller model, aim/deadzones, drift, disconnect/reconnect, reload/dodge behavior, readable damage and restart.

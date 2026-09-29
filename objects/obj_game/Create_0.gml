@@ -55,7 +55,9 @@ if (capture_mode) {
         game.effects = [{x: game.player.x, y: game.player.y, kind: "noise", size: 84, life: 0.2, total: 0.4}];
     }
     if (capture_scene == "reload") { game.player.ammo=3; game.player.reload=0.46; }
+    if (capture_scene == "reload-moving") { game.player.ammo=3; game.player.reload=0.46; game.player.anim.moving=true; game.player.anim.compact_move=160; }
     if (capture_scene == "hype") { game.player.hype=2.5; game.player.anim.hype=160; }
+    if (capture_scene == "ability-moving") { game.player.anim.noise=170; game.player.anim.noise_facing="right"; game.player.anim.moving=true; game.player.anim.compact_move=160; }
     if (capture_scene == "hit") { game.player.anim.hit=20; game.player.anim.hit_facing="right"; game.player.anim.hit_dir=180; }
     if (capture_scene == "death-fall") { game.player.hp=0; game.mode="dead"; game.player.anim.death=160; game.player.anim.death_facing="right"; }
     if (capture_scene == "depth") {

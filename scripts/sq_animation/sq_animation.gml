@@ -274,14 +274,18 @@ function sq_compact_paint(_index,_dx,_dy) {
  var _r=global.sq_compact.meta.frames[_index];
  draw_sprite_part_ext(global.sq_compact.atlas,0,_r.x,_r.y,48,48,_dx,_dy,1,1,c_white,1);
 }
+function sq_compact_paint_section(_index,_top,_height,_dx,_dy) {
+ var _r=global.sq_compact.meta.frames[_index];
+ draw_sprite_part_ext(global.sq_compact.atlas,0,_r.x,_r.y+_top,48,_height,_dx,_dy+_top,1,1,c_white,1);
+}
 function sq_compact_selection(_g) {
  var _p=_g.player;var _a=_p.anim;var _d=sq_aim_direction(_p.aim);var _v=sq_body_facing(_d);
  if(_p.hp<=0 || _g.mode=="dead")return {body:sq_compact_index("death_v9_"+_a.death_facing,max(0,_a.death)),gun:-1,rear:false,mode:"death"};
  if(_p.roll>0)return {body:sq_compact_index("roll_"+_a.roll_facing,(1-_p.roll/_g.cfg.roll_duration)*380),gun:-1,rear:false,mode:"roll"};
- if(_a.hit>=0)return {body:sq_compact_index("hit_pose_"+_a.hit_facing,_a.hit),gun:-1,rear:false,mode:"hit"};
- if(_a.noise>=0 && _p.fire<=0)return {body:sq_compact_index("noise_pose_"+_a.noise_facing,_a.noise),gun:-1,rear:false,mode:"noise"};
- if(_p.reload>0)return {body:sq_compact_index("reload_pose_"+_v,(1-_p.reload/_g.cfg.reload_time)*900),gun:-1,rear:false,mode:"reload"};
  var _time=_a.moving?(_a.backward?(480-_a.compact_move) mod 480:_a.compact_move):_a.idle;
+ if(_a.hit>=0)return {body:sq_compact_index("hit_pose_"+_a.hit_facing,_a.hit),legs:_a.moving?sq_compact_index("run_"+_a.hit_facing,_time):-1,gun:-1,rear:false,mode:"hit"};
+ if(_a.noise>=0 && _p.fire<=0)return {body:sq_compact_index("noise_pose_"+_a.noise_facing,_a.noise),legs:_a.moving?sq_compact_index("run_"+_a.noise_facing,_time):-1,gun:-1,rear:false,mode:"noise"};
+ if(_p.reload>0)return {body:sq_compact_index("reload_pose_"+_v,(1-_p.reload/_g.cfg.reload_time)*900),legs:_a.moving?sq_compact_index("run_"+_v,_time):-1,gun:-1,rear:false,mode:"reload"};
  var _body=sq_compact_index((_a.moving?"run_":"idle_")+_v,_time);
  var _w=variable_struct_get(global.sq_compact.meta.weapons,_d);
  var _gun=_p.fire>0?sq_compact_index("fire_"+_d,(1-_p.fire/_g.cfg.fire_interval)*170):_w.indices[2];
@@ -316,7 +320,11 @@ function sq_compact_draw(_g) {
   _dx=sign(lengthdir_x(1,_a.hit_dir));_dy=sign(lengthdir_y(1,_a.hit_dir));
  }
  if(_s.gun>=0 && _s.rear)sq_compact_paint(_s.gun,_dx,_dy);
- sq_compact_paint(_s.body,_dx,_dy);
+ if(variable_struct_exists(_s,"legs") && _s.legs>=0){
+  // The action owns the torso and hands; the run cycle owns planted feet.
+  sq_compact_paint_section(_s.legs,38,10,_dx,_dy);
+  sq_compact_paint_section(_s.body,0,38,_dx,_dy);
+ }else sq_compact_paint(_s.body,_dx,_dy);
  if(_s.gun>=0 && !_s.rear)sq_compact_paint(_s.gun,_dx,_dy);
  if(_a.hit>=0 && _a.hit<12 && _p.hp>0){
   gpu_set_blendmode_ext_sepalpha(bm_dest_alpha,bm_zero,bm_zero,bm_one);
@@ -352,6 +360,13 @@ function sq_compact_tests() {
  _g=sq_test_game();_g.player.ammo=3;_g.player.reload=0.9;
  sq_check(sq_compact_selection(_g).mode=="reload" && sq_compact_selection(_g).gun==-1,"reload begins on authored hands-and-pistol pose");
  _g.player.reload=0.4;var _phase=sq_compact_selection(_g).body;
+ _g.player.anim.moving=true;_g.player.anim.compact_move=0;
+ var _moving_start=sq_compact_selection(_g);
+ _g.player.anim.compact_move=160;
+ var _moving_later=sq_compact_selection(_g);
+ sq_check(_moving_start.body==_moving_later.body && _moving_start.legs!=_moving_later.legs,"reload keeps hand phase while run legs cycle");
+ _g.player.anim.moving=false;
+ sq_check(sq_compact_selection(_g).legs==-1,"standing reload keeps authored feet");
  _g.player.anim.hit=0;
  sq_check(sq_compact_selection(_g).mode=="hit","hit pose overrides reload visually");
  _g.player.anim.hit=-1;
