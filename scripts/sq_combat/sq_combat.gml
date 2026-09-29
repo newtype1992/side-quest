@@ -77,12 +77,14 @@ function sq_player_invulnerable(_g) {
     return _p.hurt > 0 || (_p.roll > _g.cfg.roll_duration - _g.cfg.roll_invulnerable);
 }
 
-function sq_damage_player(_g, _amount) {
+function sq_damage_player(_g, _amount, _attack_dir = undefined) {
     if (_g.player.hp <= 0 || sq_player_invulnerable(_g)) return false;
     _g.player.hp = max(0, _g.player.hp - _amount);
     _g.player.hurt = _g.cfg.hurt_invulnerable;
     _g.player.flash = 0.14; _g.damage_taken += _amount;
     _g.player.anim.hit = 0;
+    _g.player.anim.hit_facing = sq_body_facing(sq_aim_direction(_g.player.aim));
+    _g.player.anim.hit_dir = is_undefined(_attack_dir) ? _g.player.aim + 180 : _attack_dir;
     if (_g.player.hp <= 0) {
         _g.player.anim.death = 0;
         _g.player.anim.death_facing = sq_body_facing(sq_aim_direction(_g.player.aim));
@@ -143,7 +145,7 @@ function sq_bullets_step(_g, _dt) {
                 }
             } else if (point_distance(_b.x, _b.y, _g.player.x, _g.player.y) <= _b.radius + _g.player.radius) {
                 // Invulnerable rolls pass through bullets; bullets remain a threat after the roll.
-                if (!sq_player_invulnerable(_g)) { sq_damage_player(_g, _b.damage); _remove = true; }
+                if (!sq_player_invulnerable(_g)) { sq_damage_player(_g, _b.damage, _b.angle); _remove = true; }
             }
             if (_remove) break;
         }

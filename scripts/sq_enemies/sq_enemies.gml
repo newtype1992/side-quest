@@ -18,7 +18,7 @@ function sq_enemies_step(_g, _dt) {
         } else if (_e.state == "charge") {
             sq_move(_g, _e, lengthdir_x(190 * _dt, _e.aim), lengthdir_y(190 * _dt, _e.aim));
             if (point_distance(_e.x, _e.y, _p.x, _p.y) < _e.radius + _p.radius + 2)
-                sq_damage_player(_g, 1);
+                sq_damage_player(_g, 1, _e.aim);
             if (_e.timer <= 0) { _e.state = "recover"; _e.timer = 0.7; }
         } else if (_e.state == "recover") {
             if (_e.timer <= 0) _e.state = "seek";

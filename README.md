@@ -8,7 +8,9 @@
 
 Last Stop now uses the detailed approved room artwork with stocked aisle islands, checkout, fridges, depth sorting and occlusion fading. Rendering is 1280 x 720 while gameplay coordinates remain 640 x 360. The detailed room artwork is approved; see `docs/environment.md`.
 
-Hype Man now uses the approved compact v8 design as a playable idle/run/fire/dodge proof, with four body views and eight-way pistol aiming. Editable art is in `art/hypeman-v8-proof/`; see `docs/hypeman-v8-proof.md` for preview links, 94 passing checks, and the remaining animation work. The v7 source is retained in `art/hypeman/`.
+Hype Man uses the approved compact v8 design as the base for four body views and eight-way pistol aiming. Editable art is in `art/hypeman-v8-proof/`; see `docs/hypeman-v8-proof.md` for the original idle/run/fire/dodge proof. The v7 source is retained in `art/hypeman/`.
+
+A versioned [v9 action animation pass](docs/hypeman-v9-action-pass.md) adds reload, hit, active ability, compact passive effects and directional death to that approved base. It passes 103 GameMaker checks and has actual room captures; creator visual review and physical-device feel testing are still pending.
 
 Side Quest now has its first native GameMaker combat room. Open `Side Quest.yyp` in GameMaker LTS 2026 and press **F5**, or double-click **Play.cmd** to compile and run with the installed Windows runtime.
 

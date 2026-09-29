@@ -1,6 +1,6 @@
 /// Hype Man v8 compact proof; v7 animation data retained for legacy effects.
 function sq_animation_state() {
-    return {idle: 0, move: 0, compact_move: 0, moving: false, backward: false, hit: -1,
+    return {idle: 0, move: 0, compact_move: 0, moving: false, backward: false, hit: -1, hit_facing: "right", hit_dir: 0,
         noise: -1, noise_facing: "right", death: -1, death_facing: "right",
         roll_facing: "right", hype: 0};
 }
@@ -239,18 +239,19 @@ function sq_animation_gallery(_scene) {
         _p.anim.moving = true; _p.anim.move = 200; _p.anim.compact_move = 160;
         if (_scene == "animation-noise") { _p.anim.noise = 170; _p.anim.noise_facing = _face; }
         if (_scene == "animation-fire") _p.fire = 0.15;
-        if (_scene == "animation-reload") _p.reload = 0.46;
+        if (_scene == "animation-reload" || _scene == "animation-reload-start" || _scene == "animation-reload-ready")
+            _p.reload = _scene == "animation-reload-start" ? 0.9 : (_scene == "animation-reload-ready" ? 0.1 : 0.46);
         if (_scene == "animation-roll") { _p.roll = 0.19; _p.anim.roll_facing = _face; }
-        if (_scene == "animation-death") { _p.hp = 0; _g.mode = "dead"; _p.anim.death = 700; _p.anim.death_facing = _face; }
+        if (_scene == "animation-death" || _scene == "animation-death-start" || _scene == "animation-death-fall") {
+            _p.hp = 0; _g.mode = "dead";
+            _p.anim.death = _scene == "animation-death-start" ? 0 : (_scene == "animation-death-fall" ? 160 : 700);
+            _p.anim.death_facing = _face;
+        }
         if (_scene == "animation-hit") _p.anim.hit = 15;
         sq_hypeman_draw(_g);
         var _x = _i * 160 + 8; var _y = 100;
         sq_text(_x + 34, 78, _labels[_i], $BBC7D2, 1);
-        if (_scene == "animation-hype")
-            draw_sprite_ext(global.sq_art.sprites.hype_rear, 3, _x + 72, _y + 132, 3, 3, 0, c_white, 1);
         draw_surface_ext(global.sq_art.surface, _x, _y, 3, 3, 0, c_white, 1);
-        if (_scene == "animation-hype")
-            draw_sprite_ext(global.sq_art.sprites.hype_front, 3, _x + 72, _y + 132, 3, 3, 0, c_white, 1);
     }
     sq_text(18, 291, "48 X 48 NATIVE ART / 3X NEAREST PIXEL DISPLAY", $BBC7D2, 1);
     sq_text(18, 312, "ACTUAL ENGINE FRAMEBUFFER", $8C9EAF, 1);
@@ -258,9 +259,9 @@ function sq_animation_gallery(_scene) {
 
 /// Compact v8 playable animation proof. v7 sources remain preserved separately.
 function sq_compact_init() {
- var _f=file_text_open_read("hypeman-v8-proof/Hype-Man-Proof.json");var _s="";
+ var _f=file_text_open_read("hypeman-v8-proof/Hype-Man-Actions.json");var _s="";
  while(!file_text_eof(_f)){_s+=file_text_read_string(_f);file_text_readln(_f);}file_text_close(_f);
- var _atlas=sprite_add("hypeman-v8-proof/Hype-Man-Proof.png",1,false,false,0,0);
+ var _atlas=sprite_add("hypeman-v8-proof/Hype-Man-Actions.png",1,false,false,0,0);
  if(_atlas<0)show_error("Missing compact Hype Man atlas",true);
  global.sq_compact={meta:json_parse(_s),atlas:_atlas};
 }
@@ -275,8 +276,11 @@ function sq_compact_paint(_index,_dx,_dy) {
 }
 function sq_compact_selection(_g) {
  var _p=_g.player;var _a=_p.anim;var _d=sq_aim_direction(_p.aim);var _v=sq_body_facing(_d);
- if(_p.hp<=0 || _g.mode=="dead")return {body:sq_compact_index("death_"+_a.death_facing,max(0,_a.death)),gun:-1,rear:false,mode:"death"};
+ if(_p.hp<=0 || _g.mode=="dead")return {body:sq_compact_index("death_v9_"+_a.death_facing,max(0,_a.death)),gun:-1,rear:false,mode:"death"};
  if(_p.roll>0)return {body:sq_compact_index("roll_"+_a.roll_facing,(1-_p.roll/_g.cfg.roll_duration)*380),gun:-1,rear:false,mode:"roll"};
+ if(_a.hit>=0)return {body:sq_compact_index("hit_pose_"+_a.hit_facing,_a.hit),gun:-1,rear:false,mode:"hit"};
+ if(_a.noise>=0 && _p.fire<=0)return {body:sq_compact_index("noise_pose_"+_a.noise_facing,_a.noise),gun:-1,rear:false,mode:"noise"};
+ if(_p.reload>0)return {body:sq_compact_index("reload_pose_"+_v,(1-_p.reload/_g.cfg.reload_time)*900),gun:-1,rear:false,mode:"reload"};
  var _time=_a.moving?(_a.backward?(480-_a.compact_move) mod 480:_a.compact_move):_a.idle;
  var _body=sq_compact_index((_a.moving?"run_":"idle_")+_v,_time);
  var _w=variable_struct_get(global.sq_compact.meta.weapons,_d);
@@ -295,28 +299,41 @@ function sq_compact_draw(_g) {
  var _p=_g.player;var _a=_p.anim;var _s=sq_compact_selection(_g);var _art=global.sq_art;
  var _x=floor(_p.x);var _y=floor(_p.y);var _buff=_p.hype>0 && _p.hp>0;
  draw_set_colour(make_colour_rgb(17,24,34));draw_ellipse(_x-8,_y-1,_x+8,_y+2,false);
- if(_buff)draw_sprite(_art.sprites.hype_rear,floor(_a.hype/80),_x,_y);
+ if(_buff){
+  var _pulse=floor(_a.hype/80) mod 4;
+  draw_set_colour(make_colour_rgb(69,214,237));
+  draw_rectangle(_x-14,_y-21-_pulse,_x-12,_y-19-_pulse,false);
+  draw_rectangle(_x+12,_y-15+_pulse,_x+14,_y-13+_pulse,false);
+  draw_set_colour(make_colour_rgb(233,235,223));
+  draw_rectangle(_x-13,_y-20-_pulse,_x-13,_y-20-_pulse,false);
+  draw_rectangle(_x+13,_y-14+_pulse,_x+13,_y-14+_pulse,false);
+ }
  if(!surface_exists(_art.surface))_art.surface=surface_create(48,48);
  if(!surface_exists(_art.surface))return;
  surface_set_target(_art.surface);draw_clear_alpha(c_black,0);
  var _dx=0;var _dy=0;
  if(_a.hit>=0 && _a.hit<90 && _s.mode!="roll" && _s.mode!="death"){
-  _dx=-sign(lengthdir_x(1,_p.aim));_dy=-sign(lengthdir_y(1,_p.aim));
+  _dx=sign(lengthdir_x(1,_a.hit_dir));_dy=sign(lengthdir_y(1,_a.hit_dir));
  }
  if(_s.gun>=0 && _s.rear)sq_compact_paint(_s.gun,_dx,_dy);
  sq_compact_paint(_s.body,_dx,_dy);
  if(_s.gun>=0 && !_s.rear)sq_compact_paint(_s.gun,_dx,_dy);
- if(_a.hit>=0 && _a.hit<40 && _p.hp>0){
+ if(_a.hit>=0 && _a.hit<12 && _p.hp>0){
   gpu_set_blendmode_ext_sepalpha(bm_dest_alpha,bm_zero,bm_zero,bm_one);
   draw_set_colour(make_colour_rgb(250,238,213));draw_rectangle(0,0,47,47,false);
   gpu_set_blendmode(bm_normal);draw_set_colour(c_white);
  }
  surface_reset_target();draw_surface(_art.surface,_x-24,_y-44);
- if(_buff)draw_sprite(_art.sprites.hype_front,floor(_a.hype/80),_x,_y);
+ if(_buff){
+  draw_set_colour(make_colour_rgb(0,184,224));
+  draw_rectangle(_x-10,_y-6+(floor(_a.hype/80) mod 3),_x-8,_y-5+(floor(_a.hype/80) mod 3),false);
+  draw_rectangle(_x+8,_y-8-(floor(_a.hype/80) mod 3),_x+9,_y-7-(floor(_a.hype/80) mod 3),false);
+  draw_set_colour(c_white);
+ }
 }
 function sq_compact_tests() {
  var _meta=global.sq_compact.meta;var _g=sq_test_game();
- sq_check(array_length(_meta.frames)==100 && _meta.bodyHeight==28,"compact proof loads 100 native frames with 28px body");
+ sq_check(_meta.version=="v9-actions" && array_length(_meta.frames)==144 && _meta.bodyHeight==28,"action pass loads 144 native frames with 28px standing body");
  var _views=["right","front","left","back"];
  for(var _i=0;_i<4;++_i){var _v=_views[_i];
   sq_check(variable_struct_get(_meta.clips,"run_"+_v).total==480 && variable_struct_get(_meta.clips,"roll_"+_v).total==380,"compact run/roll timing "+_v);
@@ -331,5 +348,26 @@ function sq_compact_tests() {
  _g.player.roll=_g.cfg.roll_duration;_g.player.anim.roll_facing="right";
  sq_check(sq_compact_selection(_g).gun==-1 && sq_compact_selection(_g).mode=="roll","compact dodge hides pistol and overrides fire");
  _g.player.roll=0;_g.player.hp=0;_g.player.anim.death=700;_g.player.anim.death_facing="right";
- sq_check(sq_compact_selection(_g).body==variable_struct_get(_meta.clips,"death_right").indices[2],"compact death holds grounded concept key pose");
+ sq_check(sq_compact_selection(_g).body==variable_struct_get(_meta.clips,"death_v9_right").indices[2],"compact death holds grounded action pose");
+ _g=sq_test_game();_g.player.ammo=3;_g.player.reload=0.9;
+ sq_check(sq_compact_selection(_g).mode=="reload" && sq_compact_selection(_g).gun==-1,"reload begins on authored hands-and-pistol pose");
+ _g.player.reload=0.4;var _phase=sq_compact_selection(_g).body;
+ _g.player.anim.hit=0;
+ sq_check(sq_compact_selection(_g).mode=="hit","hit pose overrides reload visually");
+ _g.player.anim.hit=-1;
+ sq_check(sq_compact_selection(_g).body==_phase,"reload resumes at preserved phase after hit");
+ _g.player.reload=0;_g.player.anim.noise=170;_g.player.anim.noise_facing="right";
+ sq_check(sq_compact_selection(_g).mode=="noise","ability uses authored gesture");
+ _g.player.reload=0.4;
+ sq_check(sq_compact_selection(_g).mode=="noise","active gesture remains visible during reload");
+ _g.player.reload=0;
+ _g.player.fire=0.1;
+ sq_check(sq_compact_selection(_g).mode!="noise","fire interrupts ability gesture immediately");
+ _g.player.fire=0;_g.player.roll=0.2;_g.player.anim.roll_facing="right";
+ sq_check(sq_compact_selection(_g).mode=="roll","dodge overrides ability gesture");
+ _g=sq_test_game();_g.player.aim=90;
+ sq_damage_player(_g,1,180);
+ sq_check(_g.player.anim.hit_facing=="back" && _g.player.anim.hit_dir==180,"hit preserves facing and incoming force direction");
+ _g.player.aim=0;
+ sq_check(sq_compact_selection(_g).body==variable_struct_get(_meta.clips,"hit_pose_back").indices[0],"hit pose does not flip when aim changes during reaction");
 }

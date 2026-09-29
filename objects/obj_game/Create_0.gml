@@ -2,7 +2,7 @@ game_set_speed(60, gamespeed_fps);
 gpu_set_texfilter(false);
 window_set_size(1280, 720);
 window_center();
-window_set_caption("Side Quest - Hype Man v8 Animation Proof");
+window_set_caption("Side Quest - Hype Man Action Pass");
 window_set_cursor(cr_none);
 display_set_gui_size(640, 360);
 // Keep gameplay units unchanged, but render the approved art at display resolution.
@@ -54,6 +54,10 @@ if (capture_mode) {
         game.player.hype = 2.5; game.player.anim.hype = 160;
         game.effects = [{x: game.player.x, y: game.player.y, kind: "noise", size: 84, life: 0.2, total: 0.4}];
     }
+    if (capture_scene == "reload") { game.player.ammo=3; game.player.reload=0.46; }
+    if (capture_scene == "hype") { game.player.hype=2.5; game.player.anim.hype=160; }
+    if (capture_scene == "hit") { game.player.anim.hit=20; game.player.anim.hit_facing="right"; game.player.anim.hit_dir=180; }
+    if (capture_scene == "death-fall") { game.player.hp=0; game.mode="dead"; game.player.anim.death=160; game.player.anim.death_facing="right"; }
     if (capture_scene == "depth") {
         game.player.x=224;game.player.y=150;game.player.aim=0;
         game.enemies=[sq_enemy(224,260,"melee",0),sq_enemy(408,152,"ranged",0)];game.bullets=[];

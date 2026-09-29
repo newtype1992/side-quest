@@ -1,15 +1,19 @@
 # Side Quest — resume here
 
-Checkpoint: 13 September 2026; Git state reconciled 28 September 2026. This is the current handoff; older art and validation documents describe earlier passes.
+Checkpoint: 29 September 2026. Read the current action pass in [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md); earlier approval and Git history remain below.
 
-## Where we stopped
+## Current work
+
+The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. The v8 approved master is preserved. The latest build passes 103 checks plus input-adapter and runtime smoke checks. Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`. Creator visual review and physical keyboard/controller playtests are still pending, so the combat-ready character gate is not yet approved. Continue with those reviews, fix any concrete readability or transition issue, then update this handoff and publish an accepted revision.
+
+## Approved baseline from 13 September 2026
 
 The user approved the detailed Last Stop convenience-store room and the compact Hype Man gameplay proof, then requested publication. The approved build is on the public repository's main branch at commit 95f6bebf7af3821c06421c45c5ad1df846e4c408:
 https://github.com/newtype1992/side-quest/commit/95f6bebf7af3821c06421c45c5ad1df846e4c408
 
-The next production task is **reload and hit-reaction animations for the approved compact Hype Man**, followed by the remaining abilities and death pass. Do not restart character concept design or simplify the approved room again. The current checkpoint is an approved visual/gameplay proof, not a finished character or complete mission.
+At that baseline, reload and hit-reaction animations were the next tasks, followed by the abilities and death pass. Those actions are now built in the local v9 pass described above. Do not restart character concept design or simplify the approved room again.
 
-## What is complete
+## What was complete at the approved v8 baseline
 
 | Area | Current state |
 | --- | --- |
@@ -28,11 +32,11 @@ Standing character height is 28 native pixels on a 48 × 48 canvas, with foot or
 
 ## Next milestone: combat-ready Hype Man in Last Stop
 
-This completes the current character pass and the existing Milestone 1 combat-feel gate. Art approval has moved ahead of the original roadmap's later art milestone. No additional rooms, items or friends are required for this gate.
+Passing this review will complete the current character pass and the existing Milestone 1 combat-feel gate. Art production has moved ahead of the original roadmap's later art milestone. No additional rooms, items or friends are required for this gate.
 
-Five animation groups remain. Each needs gameplay integration and review at actual display size, not just an attractive enlarged sprite sheet.
+The five groups below were open at the v8 baseline. Each is now implemented in the v9 action pass and technically checked, but still needs creator review at actual display size.
 
-| Order | Remaining work | Current fallback | Completion check |
+| Order | Group | v8 fallback | Completion check |
 | --- | --- | --- | --- |
 | 1 | Reload | Compact idle/run body while reload logic executes. | Readable hand/pistol gesture, appropriate views for eight-way aim, works while moving, respects dodge interruption and Hype reload speed. |
 | 2 | Hit reactions | Brief flash and one-pixel recoil. | Clear directional flinch when shot, consistent compact silhouette, no accidental interruption of movement or higher-priority actions. |
@@ -42,9 +46,9 @@ Five animation groups remain. Each needs gameplay integration and review at actu
 
 After those five groups:
 
-- [ ] Verify all transitions: idle/run/fire/reload/hit/roll/active/buff/death/restart; check overlaps and action priority.
-- [ ] Check feet, shadow, pistol/muzzle, shelf occlusion and palette/alpha at gameplay size in all views.
-- [ ] Run the existing GameMaker suite and smoke test; add meaningful coverage for new animation behavior where needed. Record the resulting count rather than assuming it stays 94.
+- [x] Run the GameMaker suite and smoke test with new animation behavior covered: 103 checks passed.
+- [ ] Review all transitions in live play: idle/run/fire/reload/hit/roll/active/buff/death/restart; check overlaps and action priority.
+- [ ] Review feet, shadow, pistol/muzzle, shelf occlusion and palette/alpha at gameplay size in all views.
 - [ ] Complete several keyboard/mouse and physical-controller attempts using docs/playtest.md. Record controller model, aim/deadzones, drift, disconnect/reconnect, reload/dodge behavior, readable damage and restart.
 - [ ] Fix the concrete problems found in that playtest; record preferred tuning and remaining nonblocking issues.
 - [ ] Get the completed character pass reviewed in the actual room; update this checkpoint and publish the next accepted build.
@@ -53,11 +57,11 @@ The milestone is reached when the five new animation groups are integrated and a
 
 ## Exact next session
 
-1. Read this file, then docs/hypeman-v8-proof.md. Open art/hypeman-v8-proof/review/review.html and compare the approved model with the live character.
+1. Read [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md) and view the timed `Reload.gif`, `Hit.gif`, `Noise.gif` and `Death.gif` in `art/hypeman-v8-proof/review-v9/`. Compare the actual GameMaker captures in `review-v9/game-renders/` with the approved v8 model.
 2. Run Play.cmd or open Side Quest.yyp in GameMaker LTS and press F5. If the IDE reports external project changes, reload the resources from disk before editing; do not save stale in-memory resources over this work.
-3. Start a versioned working copy of the approved Aseprite source. Build **reload first, then hit reactions**, preserving the existing model, palette, foot anchor and responsive movement/aim.
-4. Integrate those two groups, test their interactions with firing and dodge, and show actual-size gameplay previews before moving on to abilities and death.
-5. Record completed work, validation and the next exact task here. Preserve previous approved assets while iterating.
+3. Play several attempts with keyboard/mouse and a physical controller using [playtest.md](playtest.md). Check reload during movement, dodge interruption, active ability, hits, death and restart.
+4. Record visual and input findings; revise any concrete issue in the versioned v9 source and verify again in the room.
+5. If the character pass is accepted, update this checkpoint and publish the accepted revision. Preserve the approved v8 source while iterating.
 
 ## Where everything lives
 
@@ -73,6 +77,8 @@ Main project: C:/Users/Kareem/Projects/Side Quest
 | scripts/sq_config/sq_config.gml | Gameplay tuning values. |
 | art/hypeman-v8-proof/Hype-Man-v8-Proof.aseprite | Approved compact native master: 100 frames, 24 tags, body and pistol layers. |
 | art/hypeman-v8-proof/build.lua | Recreates the atlas/master from source sheets. It overwrites generated outputs; preserve later hand edits before rebuilding. |
+| art/hypeman-v8-proof/Hype-Man-v9-Actions.aseprite and build-v9.lua | Versioned current action source and builder; the approved v8 master remains intact. |
+| art/hypeman-v8-proof/review-v9/ | Current timed action previews and actual GameMaker captures. |
 | art/hypeman-v8-proof/review/ | Animated previews, frame sheets, interactive review and actual game captures. |
 | datafiles/hypeman-v8-proof/ | Runtime PNG atlas and JSON metadata. |
 | art/environment-v2/ / datafiles/environment-v2/ | Approved detailed room sources and runtime art. |
@@ -88,7 +94,7 @@ Latest pre-publication test log: work/test-f253f53a99014cfda91ba41eb88d505e.log.
 
 ## Git state
 
-On 28 September 2026, the live GitHub main was verified at 95f6beb and this project checkout was fast-forwarded to it. The locally prepared project files matched the published code and art. The remaining local-only planning updates were retained, and the published README banner and its assets were preserved. This checkpoint and planning update are the next commit after 95f6beb. Receipt for the earlier publication: work/github-publication-20260913.json.
+On 28 September 2026, the local checkout was reconciled with GitHub main and the planning update was published as 851a806. The v9 action pass lives on the local `codex/hypeman-v9-actions` review branch and has not been published while visual review remains pending. Receipt for the earlier art publication: work/github-publication-20260913.json.
 
 ## After this milestone
 

@@ -1,5 +1,9 @@
 # Prototype validation
 
+## Action animation pass — 29 September 2026
+
+The v9 action pass compiled in GameMaker LTS 2026.0.0.23 and passed 103 gameplay/animation checks, the input-adapter check, and runtime smoke test. Native 1280×720 captures cover reload, hit, active ability, and death in the Last Stop room, plus four-view galleries. See [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md) for sources, review links, and remaining human acceptance checks. This is technical verification, not a completed physical-device playtest or creator visual approval.
+
 ## Current baseline — 13 September 2026
 
 The approved room and compact Hype Man proof compiled on GameMaker LTS 2026.0.0.23. The latest pre-publication run passed **94 checks, zero failures**, plus the input-adapter check and runtime smoke test. Its log is `work/test-f253f53a99014cfda91ba41eb88d505e.log`. Actual game captures use 1280 × 720 rendering with 640 × 360 gameplay coordinates. The user approved the room and compact idle/run/fire/dodge visuals.
