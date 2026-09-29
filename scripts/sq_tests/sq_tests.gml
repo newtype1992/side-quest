@@ -26,6 +26,12 @@ function sq_self_tests() {
     sq_check(_v.x == 0 && _v.y == 0, "controller drift deadzone");
     _v = sq_vector(0.6, 0, 0.2);
     sq_check(abs(_v.x - 0.5) < 0.0001, "analog speed preserved after radial deadzone");
+    sq_check(sq_input_device_next("KEYBOARD", false, true, false, true) == "CONTROLLER",
+        "controller fire reclaims input despite incidental mouse movement");
+    sq_check(sq_input_device_next("CONTROLLER", true, false, false, false) == "KEYBOARD",
+        "keyboard action reclaims input from controller");
+    sq_check(sq_input_device_next("CONTROLLER", false, false, false, false) == "CONTROLLER",
+        "idle device selection stays stable");
 
     var _g = sq_test_game();
     _input.mx = 1;
