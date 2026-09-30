@@ -4,13 +4,13 @@
 
 # Side Quest combat prototype
 
-**Returning to the project? Start with [the project checkpoint](docs/PROJECT_CHECKPOINT.md).** It records what is approved, the remaining milestone work, and the next animation pass.
+**Returning to the project? Start with [the project checkpoint](docs/PROJECT_CHECKPOINT.md).** The [game concept](docs/game-concept.md) records the confirmed player experience, audience, platform and full-run goal.
 
 Last Stop now uses the detailed approved room artwork with stocked aisle islands, checkout, fridges, depth sorting and occlusion fading. Rendering is 1280 x 720 while gameplay coordinates remain 640 x 360. The detailed room artwork is approved; see `docs/environment.md`.
 
 Hype Man uses the approved compact v8 design as the base for four body views and eight-way pistol aiming. Editable art is in `art/hypeman-v8-proof/`; see `docs/hypeman-v8-proof.md` for the original idle/run/fire/dodge proof. The v7 source is retained in `art/hypeman/`.
 
-A versioned [v9 action animation pass](docs/hypeman-v9-action-pass.md) adds reload, hit, active ability, compact passive effects and directional death to that approved base. It passes 103 GameMaker checks and has actual room captures; creator visual review and physical-device feel testing are still pending.
+A versioned [v9 action animation pass](docs/hypeman-v9-action-pass.md) adds reload, hit, active ability, compact passive effects and directional death to that approved base. The creator approved the animations, and the current build passed 108 GameMaker checks plus a runtime smoke test. The broader repeated-attempt combat-feel playtest remains open.
 
 Side Quest now has its first native GameMaker combat room. Open `Side Quest.yyp` in GameMaker LTS 2026 and press **F5**, or double-click **Play.cmd** to compile and run with the installed Windows runtime.
 

@@ -2,6 +2,8 @@
 
 Checkpoint: 29 September 2026. Read the current action pass in [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md); earlier approval and Git history remain below.
 
+The creator revisited Stage 1 of the Newtype game development lifecycle and defined the [game concept](game-concept.md): fast combat with a funny night-out story for PC action roguelite players; complete each level to reach the party; Steam on Windows first; more explicit language with fade-to-black romantic outcomes. Stage 2 rules and the first playable slice still need design and testing. This concept review does not revoke the approved Hype Man animation or Last Stop art.
+
 ## Current work
 
 The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. Moving reload, hit, and ability actions now retain animated run legs. The v8 approved master is preserved. The current project compiled and passed 108 checks plus input-adapter and runtime smoke checks on 29 September (`work/test-ef74a8d86020482fa534a5758a27bf7c.log`). Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`; the [visual review page](hypeman-v9-visual-review.md) gathers the action clips and room captures. The creator approved reload in play and subsequently approved the animations as a group on 29 September. The Scuf input incident is closed: the creator reports RT fire and switching from mouse to controller work, and suspects the short-trigger setting. See [controller-rt-diagnostic.md](controller-rt-diagnostic.md). The player animation pass is approved; the broader repeated-attempt combat-feel playtest remains pending, so the complete level gate is not yet approved.
