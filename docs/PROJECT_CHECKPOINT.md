@@ -94,7 +94,7 @@ Latest pre-publication test log: work/test-f253f53a99014cfda91ba41eb88d505e.log.
 
 ## Git state
 
-On 28 September 2026, the local checkout was reconciled with GitHub main and the planning update was published as 851a806. The v9 action pass lives on the local `codex/hypeman-v9-actions` branch and has creator visual approval. Publication status should be checked against the remote before reporting it as shipped. Receipt for the earlier art publication: work/github-publication-20260913.json.
+On 28 September 2026, the local checkout was reconciled with GitHub main and the planning update was published as 851a806. The creator-approved v9 player animation pass was fast-forwarded directly to GitHub main at 8a03132 on 29 September 2026. The merged local review branch was removed. The separate full level combat-feel gate remains open. Receipt for the earlier art publication: work/github-publication-20260913.json.
 
 ## After this milestone
 
