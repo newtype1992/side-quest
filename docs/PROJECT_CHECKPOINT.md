@@ -1,6 +1,6 @@
 # Side Quest — resume here
 
-Checkpoint: 30 September 2026. Read the current action pass in [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md); earlier approval and Git history remain below.
+Checkpoint: 30 September 2026. Bring Ice route proof is the current build step; read the approved action pass in [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md) for earlier animation work.
 
 The creator revisited Stage 1 of the Newtype game development lifecycle and defined the [game concept](game-concept.md): fast combat with a funny night-out story for PC action roguelite players; complete each level to reach the party; Steam on Windows first; more explicit language with fade-to-black romantic outcomes. Stage 2 now defines the [three-errand game design](game-design.md) and [Bring Ice first slice](bring-ice-level-design.md). These are design specifications, not implemented or playtested levels. They do not revoke the approved Hype Man animation or Last Stop art.
 
@@ -10,7 +10,9 @@ The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll 
 
 The creator then identified five combat-feel fixes. The [local revision](combat-feel-revision.md) implements arcade-style original sound cues, visible-body bullet collision, grounded dodge movement and shadow, a compact Gungeon-informed Side Quest HUD, breakable small clutter, and cover with three durability tiers. The creator accepted controls, arcade sound, visible bullet hits, the roll animation, and the general HUD, then reported that the dodge did not travel far enough to escape bullets. The current roll tuning targets about 79 native pixels over the same 380 ms animation, with 250 ms of invulnerability. Existing uncommitted `Side Quest.yyp` and `docs/playtest.md` edits remain the creator's work.
 
-For the lower-right overlap, the creator chose camera movement rather than relocating the gun card. The card is fixed; the camera follows Hype Man across the room and pans into a dark margin at the right/bottom edge. The held gun and HUD icon have brighter accents. The creator says the longer roll feels "a lot better" and explicitly accepted closing the combat pass on 30 September. The last successful automated run passed 130 checks plus input-adapter and smoke checks; a camera corner capture was reviewed. Later hidden GameMaker runner launches stalled during audio initialization before game code started, so the final smooth follow and longer-roll checks have compiled but not executed in that runner. This is a tooling verification follow-up. The accepted build is still one combat room, not a complete Bring Ice level.
+For the lower-right overlap, the creator chose camera movement rather than relocating the gun card. The card is fixed; the camera follows Hype Man across the room and pans into a dark margin at the right/bottom edge. The held gun and HUD icon have brighter accents. The creator says the longer roll feels "a lot better" and explicitly accepted closing the combat pass on 30 September. The last successful automated run passed 130 checks plus input-adapter and smoke checks; a camera corner capture was reviewed. Later GameMaker runner launches stalled during audio initialization before game code started, including hidden and visible self-test attempts. This is a tooling verification follow-up.
+
+The first Bring Ice implementation step now connects a safe entrance, the accepted Last Stop combat encounter and a marked manager-arena staging room. F or controller B enters a nearby green-marked door. The combat room locks its doors until enemies are defeated; revisiting it retains defeated enemies and broken cover, while health and pistol ammo carry across rooms. Death or restart creates fresh room state. The route uses reusable room records and door links, but all three states temporarily reuse the approved Last Stop art. The manager fight, unique room pieces, seeded layout, map, rewards, ice and result are still unbuilt. This route proof compiles; its new runtime checks have not executed because the Runner stalls at `Audio_Init()`.
 
 ## Approved baseline from 13 September 2026
 
@@ -64,8 +66,8 @@ The accepted build has the approved five animation groups and creator-reviewed c
 
 ## Exact next session
 
-1. Refactor the accepted Last Stop combat encounter into reusable room state. Preserve the approved v8 source, creator-approved v9 animation and accepted combat tuning.
-2. Prove an authored entrance → combat room → manager-arena transition, then build seeded 4–6-room assembly with a fork, loop and discovered-room map.
+1. Play the new entrance → combat → arena-staging route with keyboard/mouse and SCUF; check door prompts, combat lock, room revisit and death reset. Finish distinct authored art/collision for the entrance and manager arena.
+2. Build seeded 4–6-room assembly with a fork, loop and discovered-room map on the new room-state and door-link foundation.
 3. Add the found gun and item rules, manager boss, guarded ice, exit and result. Verify the first slice through full keyboard/mouse and SCUF attempts.
 4. Retry the hidden GameMaker self-test runner when its pre-game `Audio_Init()` stall is resolved; the latest successful full run was 130 checks.
 
@@ -106,4 +108,4 @@ On 28 September 2026, the local checkout was reconciled with GitHub main and the
 
 Follow the Stage 2 design: prove a generated Bring Ice store maze with Hype Man, selected items, one found gun, an authored manager boss, ice pickup and result. Then build Get Cash and Find the Lost Phone, add Chaos Friend and the character-specific party result. The selected item slots and controls are recorded in [game-design.md](game-design.md).
 
-Not built: seeded room assembly, multi-room mission flow, ice pickup/delivery, inventory/items/equipment, found guns, bosses, Chaos Friend, persistent content unlock, party results or a complete run. The current encounter is one handmade room. Enemy art remains temporary. Co-op, large weapon collections and broader party systems remain deferred. Windows standalone packaging previously failed under the installed profile; local F5/Play.cmd works, and packaging is a separate distribution task.
+Not built: seeded room assembly, complete multi-room mission flow, ice pickup/delivery, inventory/items/equipment, found guns, bosses, Chaos Friend, persistent content unlock, party results or a complete run. The route proof still contains one combat encounter. Enemy art remains temporary. Co-op, large weapon collections and broader party systems remain deferred. Windows standalone packaging previously failed under the installed profile; local F5/Play.cmd works, and packaging is a separate distribution task.

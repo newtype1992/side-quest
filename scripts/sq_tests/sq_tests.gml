@@ -237,6 +237,42 @@ function sq_self_tests() {
     sq_check(_g.player.hp == 6 && _g.player.ammo == 8 && array_length(_g.enemies) == 5
         && _g.kills == 0 && _g.player.active == 0 && array_length(_g.bullets) == 0,
         "restart resets combat state");
+    var _route = sq_new_bring_ice_game();
+    sq_check(_route.mode == "briefing" && _route.room_id == 0 && array_length(_route.enemies) == 0,
+        "Bring Ice begins at a safe entrance state");
+    _route.mode = "explore";
+    _route.player.x = 560; _route.player.y = 180; _route.player.hp = 4; _route.player.ammo = 3;
+    _input = sq_neutral_input(); _input.interact = true;
+    sq_update(_route, _input, 1 / 60);
+    sq_check(_route.room_id == 1 && _route.mode == "combat" && array_length(_route.enemies) == 5
+        && _route.player.hp == 4 && _route.player.ammo == 3
+        && !sq_blocked(_route, _route.player.x, _route.player.y, _route.player.radius),
+        "entering combat preserves player resources and starts the accepted encounter");
+    _route.player.x = 560; _route.player.y = 180;
+    sq_check(!sq_room_try_interact(_route) && _route.room_id == 1,
+        "uncleared combat room locks its exits");
+    _route.enemies = []; sq_spawn_bullet(_route, 300, 180, 0, 10, "enemy", 1);
+    _input.interact = false;
+    sq_update(_route, _input, 1 / 60);
+    sq_check(_route.rooms[1].cleared && _route.mode == "explore" && array_length(_route.bullets) == 0,
+        "combat clear opens the room and removes hostile bullets");
+    _route.obstacles[4].hp = 0;
+    _route.player.x = 560; _input.interact = true;
+    sq_update(_route, _input, 1 / 60);
+    sq_check(_route.room_id == 2 && _route.mode == "explore" && array_length(_route.enemies) == 0
+        && _route.player.hp == 4 && _route.player.ammo == 3
+        && !sq_blocked(_route, _route.player.x, _route.player.y, _route.player.radius),
+        "cleared room leads to manager arena staging with resources intact");
+    _route.player.x = 88; sq_update(_route, _input, 1 / 60);
+    sq_check(_route.room_id == 1 && _route.mode == "explore" && array_length(_route.enemies) == 0
+        && _route.obstacles[4].hp == 0,
+        "returning to cleared room preserves defeat and broken cover");
+    _route.player.x = 88; sq_update(_route, _input, 1 / 60);
+    sq_check(_route.room_id == 0 && _route.mode == "explore", "route allows backtracking to safe entrance");
+    _route = sq_new_bring_ice_game();
+    sq_check(_route.player.hp == 6 && !_route.rooms[1].cleared && !_route.rooms[1].visited
+        && _route.rooms[1].obstacles[4].hp == 4,
+        "new attempt resets room clear, visits, props and player health");
     sq_animation_tests();
     sq_environment_tests();
     sq_compact_tests();

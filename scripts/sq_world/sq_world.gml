@@ -18,6 +18,79 @@ function sq_new_game() {
     };
 }
 
+/// First Bring Ice route proof. Each room state owns its enemies and props;
+/// run resources remain on the shared player and game struct.
+function sq_new_bring_ice_game() {
+    var _g = sq_new_game();
+    _g.rooms = [
+        {name: "STORE ENTRANCE", kind: "entrance", visited: false, cleared: true,
+            doors: [{side: "right", to: 1}], obstacles: sq_environment_layout(), enemies: []},
+        {name: "LAST STOP AISLES", kind: "combat", visited: false, cleared: false,
+            doors: [{side: "left", to: 0}, {side: "right", to: 2}],
+            obstacles: _g.obstacles, enemies: _g.enemies},
+        {name: "MANAGER ARENA", kind: "arena_staging", visited: false, cleared: true,
+            doors: [{side: "left", to: 1}], obstacles: sq_environment_layout(), enemies: []}
+    ];
+    _g.room_id = -1;
+    sq_room_enter(_g, 0);
+    _g.mode = "briefing";
+    return _g;
+}
+
+function sq_room_enter(_g, _next) {
+    var _previous = _g.room_id;
+    if (_previous >= 0) {
+        _g.rooms[_previous].obstacles = _g.obstacles;
+        _g.rooms[_previous].enemies = _g.enemies;
+    }
+    var _room = _g.rooms[_next];
+    _g.room_id = _next;
+    _room.visited = true;
+    _g.obstacles = _room.obstacles;
+    _g.enemies = _room.enemies;
+    _g.bullets = [];
+    _g.effects = [];
+    _g.nav = [];
+    _g.nav_time = 0;
+    _g.player.x = 88; _g.player.y = 180;
+    for (var _d = 0; _d < array_length(_room.doors); ++_d) {
+        if (_room.doors[_d].to != _previous) continue;
+        var _entry = sq_room_door_position(_room.doors[_d].side);
+        _g.player.x = _entry.x + (_entry.x < 320 ? 18 : -18);
+        _g.player.y = _entry.y + (_entry.y < 180 ? 18 : (_entry.y > 180 ? -18 : 0));
+        break;
+    }
+    _g.player.roll = 0;
+    _g.player.reload = 0;
+    _g.mode = _room.kind == "combat" && !_room.cleared ? "combat" : "explore";
+    _g.camera.x = 0; _g.camera.y = 0;
+    _g.camera.smooth_x = 0; _g.camera.smooth_y = 0;
+}
+
+function sq_room_door_position(_side) {
+    if (_side == "left") return {x: 88, y: 180};
+    if (_side == "right") return {x: 560, y: 180};
+    if (_side == "top") return {x: 320, y: 128};
+    return {x: 320, y: 290};
+}
+
+function sq_room_at_door(_g, _door) {
+    var _position = sq_room_door_position(_door.side);
+    return point_distance(_g.player.x, _g.player.y, _position.x, _position.y) < 26;
+}
+
+function sq_room_try_interact(_g) {
+    if (!variable_struct_exists(_g, "rooms") || _g.mode != "explore") return false;
+    var _doors = _g.rooms[_g.room_id].doors;
+    for (var _d = 0; _d < array_length(_doors); ++_d) {
+        if (sq_room_at_door(_g, _doors[_d])) {
+            sq_room_enter(_g, _doors[_d].to);
+            return true;
+        }
+    }
+    return false;
+}
+
 function sq_enemy(_x, _y, _kind, _wait) {
     return {x: _x, y: _y, radius: 7, kind: _kind,
         hp: _kind == "melee" ? 6 : 8, max_hp: _kind == "melee" ? 6 : 8,
@@ -131,18 +204,32 @@ function sq_effect(_g, _x, _y, _kind, _size) {
 
 function sq_update(_g, _input, _dt) {
     if (_g.mode == "dead") { sq_death_animation_tick(_g, clamp(_dt, 0, 1 / 30)); return; }
-    if (_g.mode != "combat") return;
+    if (_g.mode != "combat" && _g.mode != "explore") return;
     _dt = clamp(_dt, 0, 1 / 30);
     _g.time += _dt;
     _g.nav_time -= _dt;
-    if (_g.nav_time <= 0) { sq_build_nav(_g); _g.nav_time = 0.18; }
+    if (_g.mode == "combat" && _g.nav_time <= 0) { sq_build_nav(_g); _g.nav_time = 0.18; }
     for (var _i = array_length(_g.effects) - 1; _i >= 0; --_i) {
         _g.effects[_i].life -= _dt;
         if (_g.effects[_i].life <= 0) array_delete(_g.effects, _i, 1);
     }
+    if (_g.mode == "explore") {
+        _input.fire = false;
+        _input.reload = false;
+        _input.active = false;
+    }
     sq_player_step(_g, _input, _dt);
-    sq_enemies_step(_g, _dt);
-    sq_bullets_step(_g, _dt);
+    if (_g.mode == "combat") {
+        sq_enemies_step(_g, _dt);
+        sq_bullets_step(_g, _dt);
+    }
     if (_g.player.hp <= 0) { _g.mode = "dead"; _g.bullets = []; }
-    else if (array_length(_g.enemies) == 0) { _g.mode = "cleared"; _g.bullets = []; }
+    else if (_g.mode == "combat" && array_length(_g.enemies) == 0) {
+        _g.bullets = [];
+        if (variable_struct_exists(_g, "rooms")) {
+            _g.rooms[_g.room_id].cleared = true;
+            _g.mode = "explore";
+        } else _g.mode = "cleared";
+    }
+    if (_g.mode == "explore" && _input.interact) sq_room_try_interact(_g);
 }

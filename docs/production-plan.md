@@ -1,8 +1,8 @@
 # Side Quest production plan
 
-Updated 29 September 2026. **Resume with [PROJECT_CHECKPOINT.md](PROJECT_CHECKPOINT.md)** for the approved baseline, exact next task and Git state. [Stage 2 game design](game-design.md) and the [Bring Ice build specification](bring-ice-level-design.md) now define the full run and first slice.
+Updated 30 September 2026. **Resume with [PROJECT_CHECKPOINT.md](PROJECT_CHECKPOINT.md)** for the approved baseline, exact next task and Git state. [Stage 2 game design](game-design.md) and the [Bring Ice build specification](bring-ice-level-design.md) now define the full run and first slice.
 
-The immediate objective is a combat room worth replaying. The attached Side Quest Project Brief supplies the design direction: a single-player, top-down action roguelite about adult friends trying to reach a house party while ordinary errands become dangerous detours. GameMaker is the intended engine, and true pixel art and responsive gun combat are central to the direction.
+The immediate objective is the Bring Ice first slice, using the accepted combat room as its foundation. The attached Side Quest Project Brief supplies the design direction: a single-player, top-down action roguelite about adult friends trying to reach a house party while ordinary errands become dangerous detours. GameMaker is the intended engine, and true pixel art and responsive gun combat are central to the direction.
 
 This plan treats confirmed design choices, proposed examples, and open questions separately. The brief's roadmap is design context, not an instruction to implement every feature at once. The direct request authorized planning or beginning production; the follow-up specifically added controller support from the start.
 
@@ -10,7 +10,7 @@ This plan treats confirmed design choices, proposed examples, and open questions
 
 The first combat room has been implemented in the existing GameMaker project structure. It includes movement and independent aiming, keyboard/mouse and controller input, one pistol, reload, dodge, health, death, restart, two enemy archetypes, solid shelves, a breakable crate, attack tells, hit cues, sound, and clear/death results. Hype Man's proposed passive and active are implemented for immediate testing.
 
-The detailed Last Stop room and full compact Hype Man animation pass are approved and published on main. Enemy graphics and combat tuning still need work. The build establishes a baseline for tuning; it has not established that the combat is fun or matches the reference's feel. A combat clear is the current ending. There is no ice pickup or multi-room mission yet.
+The detailed Last Stop room, compact Hype Man animation pass and combat-feel pass are approved and published on main. The next local build adds a three-state route proof: safe entrance, accepted combat encounter and manager-arena staging. Combat clear now opens the doors; the boss, ice and mission result are not yet present. All three states reuse the approved room art while distinct authored pieces are made.
 
 ## Working decisions
 
@@ -22,7 +22,7 @@ The detailed Last Stop room and full compact Hype Man animation pass are approve
 | Hype Man first, Chaos Friend second | Hype Man starts available; a first full-night clear unlocks Chaos Friend for later runs. |
 | 640 × 360 gameplay coordinates; 1280 × 720 rendering | Approved room display; compact character stands 28 native pixels tall and displays at 2×. |
 | Eight-round pistol and infinite reserve | The starter remains a fallback; the first-release found-gun pool has limited ammunition. |
-| One handmade encounter | Current prototype only. Each designed errand assembles 4–6 themed rooms before a fixed boss arena. |
+| One handmade combat encounter in a three-state route proof | Current implementation only. Each designed errand assembles 4–6 themed rooms before a fixed boss arena. |
 | Three-errand night | Bring Ice, Get Cash, Find the Lost Phone, then the party; 25–35 minute successful-run target. Death restarts the night. |
 | Adult cast and original assets | Follows the brief's 21+ character direction and original nightlife setting. |
 
@@ -46,7 +46,7 @@ Validate the kill buff and ten-second projectile clear in play. Implement two on
 
 ## Milestone 3 Bring Ice playable slice
 
-**Status:** Stage 2 design complete; implementation not started. See [bring-ice-level-design.md](bring-ice-level-design.md).
+**Status:** Stage 2 design complete; implementation started with reusable room state, door links and a linear route proof. The build compiles, but the new route needs live play and automated runtime verification. See [bring-ice-level-design.md](bring-ice-level-design.md).
 
 Build one Bring Ice level from 4–6 seeded, authored convenience-store room pieces with a fork and loop, a discovered-room map and a fixed Armored Night Manager arena. The current approved Last Stop encounter supplies visual and combat direction; it is not the complete generated level. Add explicit quest states: accepted, exploring, boss defeated, ice collected, escaped, result. Preserve room-clear and pickup state on revisits; prevent repeated rewards.
 
@@ -66,8 +66,8 @@ The Last Stop environment and compact Hype Man design were brought forward and a
 
 ## Ordered next backlog
 
-1. Refactor the accepted fixed encounter into reusable room state and prove an entrance, combat room and authored manager-arena transition.
-2. Build seeded authored-room assembly and the Bring Ice discovered-room map.
+1. Playtest the entrance → accepted combat room → manager-arena staging route, then finish distinct authored entrance and arena pieces.
+2. Build seeded authored-room assembly and the Bring Ice discovered-room map using the new room records and door links.
 3. Implement the selected item/weapon rules, the manager boss, ice pickup and escape/result; verify the first slice on both input methods.
 4. Build Get Cash and Find the Lost Phone with their bosses, then add Chaos Friend, persistent content unlock and character-specific party results for the full run.
 

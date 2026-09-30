@@ -1,6 +1,6 @@
 # Bring Ice first playable level
 
-Stage 2 build specification, 29 September 2026. This is one short errand level that proves the [full-run game design](game-design.md) with Hype Man. The approved Last Stop environment and Hype Man animations remain the visual baseline. The current fixed combat room is a prototype, not evidence that this level already runs.
+Stage 2 build specification, 29 September 2026. This is one short errand level that proves the [full-run game design](game-design.md) with Hype Man. The approved Last Stop environment and Hype Man animations remain the visual baseline. A linear entrance → combat → arena-staging route proof is now implemented; the full level is not yet playable.
 
 ## Player route and result
 

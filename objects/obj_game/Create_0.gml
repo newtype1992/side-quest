@@ -10,7 +10,7 @@ sq_camera = camera_create_view(0,0,640,360,0,noone,-1,-1,-1,-1);
 view_enabled=true; view_visible[0]=true; view_camera[0]=sq_camera;
 view_xport[0]=0; view_yport[0]=0; view_wport[0]=1280; view_hport[0]=720;
 surface_resize(application_surface,1280,720);
-game = sq_new_game();
+game = sq_new_bring_ice_game();
 paused = false;
 pad_slot = -1;
 input_device = "KEYBOARD";
@@ -35,6 +35,7 @@ sq_audio_init();
 sq_art_init();
 sq_environment_init();
 if (test_mode) {
+    game = sq_new_game();
     sq_self_tests();
     var _hardware = sq_read_input();
     show_debug_message("SQ_INPUT_ADAPTER_PASS controller_slot=" + string(pad_slot));
@@ -48,6 +49,7 @@ if (test_mode) {
     game.mode = "combat";
 }
 if (capture_mode) {
+    game = sq_new_game();
     if (capture_scene == "audio") {
         var _cue_names = variable_struct_get_names(global.sq_audio);
         for (var _cue_index = 0; _cue_index < array_length(_cue_names); ++_cue_index) {

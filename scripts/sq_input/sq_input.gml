@@ -19,7 +19,8 @@ function sq_read_input() {
     var _mouse_fire = mouse_check_button(mb_left);
     var _keyboard_action = _keys.x != 0 || _keys.y != 0 || _mouse_fire
         || keyboard_check_pressed(ord("R"))
-        || keyboard_check_pressed(ord("E")) || keyboard_check_pressed(vk_space)
+        || keyboard_check_pressed(ord("E")) || keyboard_check_pressed(ord("F"))
+        || keyboard_check_pressed(vk_space)
         || mouse_check_button_pressed(mb_right) || keyboard_check_pressed(vk_enter);
     last_mouse_x = _window_mouse_x; last_mouse_y = _window_mouse_y;
 
@@ -47,6 +48,7 @@ function sq_read_input() {
     var _pad_active = false;
     var _pad_pause = false;
     var _pad_confirm = false;
+    var _pad_interact = false;
     if (pad_slot != -1) {
         _stick = sq_vector(gamepad_axis_value(pad_slot, gp_axislh),
             gamepad_axis_value(pad_slot, gp_axislv), game.cfg.stick_deadzone);
@@ -59,9 +61,10 @@ function sq_read_input() {
         _pad_active = gamepad_button_check_pressed(pad_slot, gp_shoulderr);
         _pad_pause = gamepad_button_check_pressed(pad_slot, gp_start);
         _pad_confirm = _pad_pause || gamepad_button_check_pressed(pad_slot, gp_face1);
+        _pad_interact = gamepad_button_check_pressed(pad_slot, gp_face2);
     }
     var _pad_stick = _stick.x != 0 || _stick.y != 0 || _aim_stick.x != 0 || _aim_stick.y != 0;
-    var _pad_action = _pad_fire || _pad_roll || _pad_reload || _pad_active || _pad_pause;
+    var _pad_action = _pad_fire || _pad_roll || _pad_reload || _pad_active || _pad_pause || _pad_interact;
     input_device = sq_input_device_next(input_device, _keyboard_action, _mouse_moved, _pad_stick, _pad_action);
     _input.aim = game.player.aim;
     if (input_device == "CONTROLLER") {
@@ -80,6 +83,7 @@ function sq_read_input() {
     }
     _input.pause = keyboard_check_pressed(vk_escape) || _pad_pause;
     _input.confirm = keyboard_check_pressed(vk_enter) || _pad_confirm;
+    _input.interact = keyboard_check_pressed(ord("F")) || _pad_interact;
     return _input;
 }
 

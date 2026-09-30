@@ -45,6 +45,7 @@ function sq_actor_draw(_x, _y, _colour, _aim, _stride, _roll, _flash) {
 
 function sq_scene_draw(_g) {
     sq_environment_draw(_g);
+    if (variable_struct_exists(_g, "rooms")) sq_room_doors_draw(_g);
     // Actors use feet for gameplay positions and are sorted by feet for overlap.
     var _actors = [];
     for(var _j=0;_j<array_length(_g.obstacles);++_j) {
@@ -106,9 +107,28 @@ function sq_scene_draw(_g) {
     var _muzzle = sq_weapon_origin(_g, false);
     var _rx = input_device == "CONTROLLER" ? _muzzle.x + lengthdir_x(54, _p.aim) : mouse_x;
     var _ry = input_device == "CONTROLLER" ? _muzzle.y + lengthdir_y(54, _p.aim) : mouse_y;
-    if (_g.mode == "combat" && !paused) {
+    if ((_g.mode == "combat" || _g.mode == "explore") && !paused) {
         sq_outline(_rx - 3, _ry - 3, _rx + 3, _ry + 3, $DCEFFF);
         sq_rect(_rx, _ry, _rx, _ry, $DCEFFF);
+    }
+}
+
+function sq_room_doors_draw(_g) {
+    var _open = _g.mode != "combat";
+    var _colour = _open ? $A8F4B8 : $D9828B;
+    var _doors = _g.rooms[_g.room_id].doors;
+    for (var _d = 0; _d < array_length(_doors); ++_d) {
+        var _door = _doors[_d];
+        var _point = sq_room_door_position(_door.side);
+        if (_door.side == "left" || _door.side == "right") {
+            sq_rect(_point.x - 12, _point.y - 20, _point.x + 11, _point.y - 17, _colour);
+            sq_rect(_point.x - 12, _point.y + 23, _point.x + 11, _point.y + 26, _colour);
+            sq_outline(_point.x - 12, _point.y - 16, _point.x + 11, _point.y + 22, _colour);
+        } else {
+            sq_rect(_point.x - 20, _point.y - 6, _point.x - 17, _point.y + 6, _colour);
+            sq_rect(_point.x + 17, _point.y - 6, _point.x + 20, _point.y + 6, _colour);
+            sq_outline(_point.x - 16, _point.y - 6, _point.x + 16, _point.y + 6, _colour);
+        }
     }
 }
 
@@ -127,11 +147,17 @@ function sq_hud_draw(_g) {
     sq_rect(17, 32, 26, 40, _p.active <= 0 ? make_colour_rgb(76,216,231) : make_colour_rgb(53,76,91));
     sq_text(19, 33, "N", make_colour_rgb(17,27,40), 1);
     sq_text(32, 33, _p.active <= 0 ? "NOISE READY" : "NOISE " + string(ceil(_p.active)) + "S", _p.active <= 0 ? make_colour_rgb(169,241,229) : make_colour_rgb(170,177,180), 1);
-    sq_text(543, 15, string(array_length(_g.enemies)) + " THREATS", make_colour_rgb(233,235,223), 1);
+    sq_text(543, 15, _g.mode == "combat" ? string(array_length(_g.enemies)) + " THREATS" : "NO THREATS", make_colour_rgb(233,235,223), 1);
     draw_set_alpha(0.86); sq_rect(9, 322, 482, 343, make_colour_rgb(16,23,34)); draw_set_alpha(1);
     sq_outline(9, 322, 482, 343, make_colour_rgb(82,103,121));
     sq_text(17, 329, "CHAT", make_colour_rgb(76,216,231), 1);
-    sq_text(51, 329, _g.mode == "cleared" ? "PLANNER: GREAT. NOW ACTUALLY BUY THE ICE." : "PLANNER: JUST GRAB ICE. HOW HARD CAN IT BE?", make_colour_rgb(215,214,200), 1);
+    var _chat = _g.mode == "cleared" ? "PLANNER: GREAT. NOW ACTUALLY BUY THE ICE." : "PLANNER: JUST GRAB ICE. HOW HARD CAN IT BE?";
+    if (variable_struct_exists(_g, "rooms")) {
+        if (_g.room_id == 0) _chat = "PLANNER: CHECK THE AISLES. WE STILL NEED ICE.";
+        if (_g.room_id == 1 && _g.rooms[1].cleared) _chat = "PLANNER: AISLES CLEAR. FIND THE MANAGER.";
+        if (_g.room_id == 2) _chat = "PLANNER: THE ICE IS IN HERE SOMEWHERE.";
+    }
+    sq_text(51, 329, _chat, make_colour_rgb(215,214,200), 1);
     if (_g.mode == "briefing" || paused) {
         var _hint = input_device == "CONTROLLER"
             ? "LS MOVE  RS AIM  RT FIRE  A/LB DODGE  X RELOAD  RB NOISE  START PAUSE"
@@ -139,11 +165,33 @@ function sq_hud_draw(_g) {
         sq_text(16, 348, _hint, $AA9D8D, 1);
     }
     sq_weapon_hud_draw(_g);
+    if (variable_struct_exists(_g, "rooms")) sq_room_hud_draw(_g);
     if (_p.reload > 0 && _p.hp > 0 && _g.mode == "combat") sq_reload_bar_draw(_g);
     if (_p.roll_cooldown > 0) {
         sq_rect(_p.x - 9, _p.y + 12, _p.x + 9, _p.y + 13, $4C3933);
         sq_rect(_p.x - 9, _p.y + 12, _p.x - 9 + 18 * (1 - _p.roll_cooldown / _g.cfg.roll_cooldown), _p.y + 13, $CBCE65);
     }
+}
+
+function sq_room_hud_draw(_g) {
+    if (_g.mode == "briefing" || _g.mode == "dead") return;
+    var _label = _g.rooms[_g.room_id].name;
+    draw_set_alpha(0.88); sq_rect(193, 4, 469, 33, $101722); draw_set_alpha(1);
+    sq_outline(193, 4, 469, 33, $526779);
+    sq_text(201, 8, "BRING ICE  /  " + _label, $EBE9DB, 1);
+    var _message = "";
+    if (_g.mode == "combat") _message = "DOORS LOCKED: CLEAR THIS ROOM";
+    else {
+        _message = _g.room_id == 2 ? "ARENA PREVIEW / BOSS PENDING" : "FOLLOW THE GREEN DOOR MARKER";
+        var _doors = _g.rooms[_g.room_id].doors;
+        for (var _d = 0; _d < array_length(_doors); ++_d) {
+            if (sq_room_at_door(_g, _doors[_d])) {
+                _message = input_device == "CONTROLLER" ? "B: ENTER DOOR" : "F: ENTER DOOR";
+                break;
+            }
+        }
+    }
+    sq_text(201, 20, _message, _g.mode == "combat" ? $D9828B : $A8F4B8, 1);
 }
 
 function sq_heart_draw(_x, _y, _full) {
@@ -220,7 +268,7 @@ function sq_camera_advance(_g, _dt, _instant) {
 }
 
 function sq_overlay(_g) {
-    if (_g.mode == "combat" && !paused) return;
+    if ((_g.mode == "combat" || _g.mode == "explore") && !paused) return;
     if (_g.mode == "dead" && _g.player.anim.death < 700) return;
     draw_set_alpha(0.8); sq_rect(0, 44, 639, 315, $150F12); draw_set_alpha(1);
     var _title = paused ? "TAKE A BREATHER" : "ONE QUICK STOP";
@@ -230,7 +278,7 @@ function sq_overlay(_g) {
     sq_rect(140, 112, 498, 113, $806047);
     if (_g.mode == "briefing") {
         sq_text(140, 129, "LAST STOP CONVENIENCE  /  11:47 PM", $CBCE65, 1);
-        sq_text(140, 149, "FIVE THREATS. ONE PISTOL. A VERY SMALL ERRAND.", $C2BBAA, 1);
+        sq_text(140, 149, "ENTER THE STORE, CLEAR THE AISLES, FIND THE ARENA.", $C2BBAA, 1);
         sq_text(140, 170, "DODGE THROUGH BULLETS EARLY IN YOUR ROLL.", $C2BBAA, 1);
         sq_text(140, 186, "THE END OF A ROLL IS VULNERABLE. USE THE AISLES.", $C2BBAA, 1);
         sq_text(140, 207, "KILLS BOOST MOVEMENT AND RELOAD FOR 2.5 SECONDS.", $A8F4B8, 1);
@@ -254,7 +302,9 @@ function sq_overlay(_g) {
             ? "A / START  " + (_g.mode == "briefing" ? "ENTER THE STORE" : "TRY AGAIN")
             : "ENTER  " + (_g.mode == "briefing" ? "ENTER THE STORE" : "TRY AGAIN"), $241911, 1);
     }
-    sq_text(140, 293, "HYPE MAN V7  /  FIRST COMBAT ROOM  /  NO SAVED PROGRESS", $7F766B, 1);
+    sq_text(140, 293, variable_struct_exists(_g, "rooms")
+        ? "BRING ICE ROUTE PROOF  /  MANAGER FIGHT COMING NEXT"
+        : "HYPE MAN V7  /  FIRST COMBAT ROOM  /  NO SAVED PROGRESS", $7F766B, 1);
 }
 
 /// Approved Last Stop layout: coordinates are native pixels; bounds are ground footprints.

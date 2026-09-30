@@ -21,5 +21,5 @@ function sq_vector(_x, _y, _deadzone) {
 
 function sq_neutral_input() {
     return {mx: 0, my: 0, aim: 0, fire: false, roll: false,
-        reload: false, active: false, pause: false, confirm: false};
+        reload: false, active: false, interact: false, pause: false, confirm: false};
 }

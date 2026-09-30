@@ -12,11 +12,11 @@ if (test_mode || capture_mode) {
 if (keyboard_check_pressed(vk_f2)) input_debug = !input_debug;
 var _input = sq_read_input();
 debug_input_fire = _input.fire;
-if (!window_has_focus() && game.mode == "combat") paused = true;
+if (!window_has_focus() && (game.mode == "combat" || game.mode == "explore")) paused = true;
 if (game.mode == "briefing" || game.mode == "dead" || game.mode == "cleared") {
     if (game.mode == "dead") sq_update(game, _input, delta_time / 1000000);
     if (_input.confirm && (game.mode != "dead" || game.player.anim.death >= 700)) {
-        game = sq_new_game(); game.mode = "combat"; paused = false;
+        game = sq_new_bring_ice_game(); game.mode = "explore"; paused = false;
         camera_set_view_pos(sq_camera, 0, 0);
     }
     exit;
