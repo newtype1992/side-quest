@@ -2,7 +2,7 @@
 function sq_config() {
     return {
         width: 640, height: 360, move_speed: 112, player_radius: 6, health: 6,
-        roll_speed: 270, roll_duration: 0.38, roll_invulnerable: 0.22,
+        roll_speed: 225, roll_duration: 0.38, roll_invulnerable: 0.25,
         roll_cooldown: 0.65, hurt_invulnerable: 0.85,
         magazine: 8, reload_time: 0.9, fire_interval: 0.17,
         bullet_speed: 360, bullet_damage: 2, bullet_radius: 2,

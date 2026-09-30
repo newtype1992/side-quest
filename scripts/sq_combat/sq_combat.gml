@@ -21,8 +21,12 @@ function sq_player_step(_g, _input, _dt) {
     }
     if (_p.roll > 0) {
         var _travel = min(_dt, _p.roll);
-        sq_move(_g, _p, lengthdir_x(_c.roll_speed * _travel, _p.roll_dir),
-            lengthdir_y(_c.roll_speed * _travel, _p.roll_dir));
+        // Launch through the tuck, then ease into the authored landing pose.
+        var _phase = 1 - _p.roll / _c.roll_duration;
+        var _pace = _phase < 0.12 ? lerp(0.7, 1.05, _phase / 0.12)
+            : (_phase > 0.68 ? lerp(1.05, 0.35, (_phase - 0.68) / 0.32) : 1.05);
+        sq_move(_g, _p, lengthdir_x(_c.roll_speed * _pace * _travel, _p.roll_dir),
+            lengthdir_y(_c.roll_speed * _pace * _travel, _p.roll_dir));
         _p.roll = max(0, _p.roll - _dt);
         return; // A committed roll pauses reload and prevents gun/ability use.
     }
@@ -116,6 +120,15 @@ function sq_spawn_bullet(_g, _x, _y, _angle, _speed, _team, _damage) {
         radius: _team == "player" ? _g.cfg.bullet_radius : 3, life: 4});
 }
 
+/// Bullets are drawn over the standing bodies, whose foot origins sit below their torsos.
+function sq_actor_hit_by_bullet(_b, _actor, _player) {
+    var _top = _player ? -21 : -16;
+    var _bottom = _player ? (_actor.roll > 0 ? -7 : -4) : -3;
+    var _radius = _player ? (_actor.roll > 0 ? 8 : 7) : 7;
+    var _nearest_y = clamp(_b.y, _actor.y + _top, _actor.y + _bottom);
+    return sqr(_b.x - _actor.x) + sqr(_b.y - _nearest_y) <= sqr(_b.radius + _radius);
+}
+
 function sq_bullets_step(_g, _dt) {
     for (var _i = array_length(_g.bullets) - 1; _i >= 0; --_i) {
         var _b = _g.bullets[_i];
@@ -128,8 +141,17 @@ function sq_bullets_step(_g, _dt) {
                 var _cover = sq_obstacle_at(_g, _b.x, _b.y, _b.radius);
                 if (_cover != -1 && _g.obstacles[_cover].hp > 0) {
                     var _o = _g.obstacles[_cover];
-                    _o.hp = max(0, _o.hp - _b.damage);
-                    if (_o.hp == 0) { sq_effect(_g, _b.x, _b.y, "defeat", 12); _g.nav_time = 0; }
+                    if (_o.kind == "clutter") sq_destroy_clutter(_g, _o, _b.x, _b.y);
+                    else {
+                        _o.hp = max(0, _o.hp - _b.damage);
+                        if (_o.hp == 0) {
+                            sq_effect(_g, _b.x, _b.y, _o.kind == "shelf" ? "spark" : "splinter", _o.kind == "shelf" ? 18 : 10);
+                            sq_sound(_o.kind == "shelf" ? "metal_break" : "prop_break"); _g.nav_time = 0;
+                        } else {
+                            sq_effect(_g, _b.x, _b.y, _o.kind == "shelf" ? "spark" : "splinter", 5);
+                            sq_sound(_o.kind == "shelf" ? "metal_hit" : "prop_hit");
+                        }
+                    }
                 }
                 sq_effect(_g, _b.x, _b.y, "hit", 4);
                 _remove = true; break;
@@ -137,13 +159,13 @@ function sq_bullets_step(_g, _dt) {
             if (_b.team == "player") {
                 for (var _e = array_length(_g.enemies) - 1; _e >= 0; --_e) {
                     var _enemy = _g.enemies[_e];
-                    if (point_distance(_b.x, _b.y, _enemy.x, _enemy.y) <= _b.radius + _enemy.radius) {
+                    if (sq_actor_hit_by_bullet(_b, _enemy, false)) {
                         _g.hits += 1;
                         sq_damage_enemy(_g, _e, _b.damage, _b.angle);
                         _remove = true; break;
                     }
                 }
-            } else if (point_distance(_b.x, _b.y, _g.player.x, _g.player.y) <= _b.radius + _g.player.radius) {
+            } else if (sq_actor_hit_by_bullet(_b, _g.player, true)) {
                 // Invulnerable rolls pass through bullets; bullets remain a threat after the roll.
                 if (!sq_player_invulnerable(_g)) { sq_damage_player(_g, _b.damage, _b.angle); _remove = true; }
             }

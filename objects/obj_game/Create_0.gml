@@ -16,8 +16,8 @@ pad_slot = -1;
 input_device = "KEYBOARD";
 input_debug = false;
 debug_input_fire = false;
-last_mouse_x = mouse_x;
-last_mouse_y = mouse_y;
+last_mouse_x = window_mouse_get_x();
+last_mouse_y = window_mouse_get_y();
 test_mode = false;
 test_frame = 0;
 capture_mode = false;
@@ -48,6 +48,14 @@ if (test_mode) {
     game.mode = "combat";
 }
 if (capture_mode) {
+    if (capture_scene == "audio") {
+        var _cue_names = variable_struct_get_names(global.sq_audio);
+        for (var _cue_index = 0; _cue_index < array_length(_cue_names); ++_cue_index) {
+            var _cue = variable_struct_get(global.sq_audio, _cue_names[_cue_index]);
+            show_debug_message("SQ_AUDIO_PCM " + _cue_names[_cue_index] + " "
+                + buffer_base64_encode(_cue.buffer, 0, buffer_get_size(_cue.buffer)));
+        }
+    }
     game.mode = "combat";
     game.player.x = 265; game.player.y = 188; game.player.aim = 8;
     game.enemies[0].state = "tell"; game.enemies[0].aim = 192; game.enemies[0].timer = 0.45;
@@ -65,6 +73,13 @@ if (capture_mode) {
     }
     if (capture_scene == "reload") { game.player.ammo=3; game.player.reload=0.46; }
     if (capture_scene == "reload-moving") { game.player.ammo=3; game.player.reload=0.46; game.player.anim.moving=true; game.player.anim.compact_move=160; }
+    if (capture_scene == "roll") { game.player.roll=0.19; game.player.roll_dir=0; game.player.anim.roll_facing="right"; }
+    if (capture_scene == "hud-corner") { game.player.x=570; game.player.y=292; game.player.aim=45; }
+    if (capture_scene == "camera-mid") { game.player.x=400; game.player.y=210; game.player.aim=0; }
+    if (capture_scene == "clutter-broken") {
+        game.obstacles[6].hp=0; game.obstacles[11].hp=0;
+        game.obstacles[12].hp=0; game.obstacles[13].hp=0;
+    }
     if (capture_scene == "hype") { game.player.hype=2.5; game.player.anim.hype=160; }
     if (capture_scene == "ability-moving") { game.player.anim.noise=170; game.player.anim.noise_facing="right"; game.player.anim.moving=true; game.player.anim.compact_move=160; }
     if (capture_scene == "hit") { game.player.anim.hit=20; game.player.anim.hit_facing="right"; game.player.anim.hit_dir=180; }
@@ -74,6 +89,12 @@ if (capture_mode) {
         game.enemies=[sq_enemy(224,260,"melee",0),sq_enemy(408,152,"ranged",0)];game.bullets=[];
     }
     if (capture_scene == "destroyed") { game.obstacles[4].hp=0; game.mode="combat"; }
+    if (capture_scene == "cover-destroyed") {
+        game.obstacles[0].hp=0; game.obstacles[4].hp=0; game.obstacles[10].hp=0;
+    }
+    if (capture_scene == "cover-damaged") {
+        game.obstacles[0].hp=7; game.obstacles[4].hp=2; game.obstacles[10].hp=4;
+    }
     if (capture_scene == "paused") paused = true;
     if (capture_scene == "controller") input_device = "CONTROLLER";
     if (capture_scene == "input-diagnostic") {
@@ -81,4 +102,6 @@ if (capture_mode) {
         var _diagnostic_input = sq_read_input();
         debug_input_fire = _diagnostic_input.fire;
     }
+    sq_camera_advance(game, 1, true);
+    camera_set_view_pos(sq_camera, game.camera.x, game.camera.y);
 }

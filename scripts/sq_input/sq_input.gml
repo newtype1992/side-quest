@@ -12,13 +12,16 @@ function sq_read_input() {
     var _input = sq_neutral_input();
     var _keys = sq_vector(keyboard_check(ord("D")) - keyboard_check(ord("A")),
         keyboard_check(ord("S")) - keyboard_check(ord("W")), 0);
-    var _mouse_moved = abs(mouse_x - last_mouse_x) + abs(mouse_y - last_mouse_y) > 1;
+    // Camera motion changes room-space mouse_x/y even when the physical mouse is still.
+    var _window_mouse_x = window_mouse_get_x();
+    var _window_mouse_y = window_mouse_get_y();
+    var _mouse_moved = abs(_window_mouse_x - last_mouse_x) + abs(_window_mouse_y - last_mouse_y) > 1;
     var _mouse_fire = mouse_check_button(mb_left);
     var _keyboard_action = _keys.x != 0 || _keys.y != 0 || _mouse_fire
         || keyboard_check_pressed(ord("R"))
         || keyboard_check_pressed(ord("E")) || keyboard_check_pressed(vk_space)
         || mouse_check_button_pressed(mb_right) || keyboard_check_pressed(vk_enter);
-    last_mouse_x = mouse_x; last_mouse_y = mouse_y;
+    last_mouse_x = _window_mouse_x; last_mouse_y = _window_mouse_y;
 
     if (pad_slot != -1 && !gamepad_is_connected(pad_slot)) {
         pad_slot = -1;

@@ -17,6 +17,7 @@ if (game.mode == "briefing" || game.mode == "dead" || game.mode == "cleared") {
     if (game.mode == "dead") sq_update(game, _input, delta_time / 1000000);
     if (_input.confirm && (game.mode != "dead" || game.player.anim.death >= 700)) {
         game = sq_new_game(); game.mode = "combat"; paused = false;
+        camera_set_view_pos(sq_camera, 0, 0);
     }
     exit;
 }
@@ -26,3 +27,5 @@ if (_input.pause || (paused && _input.confirm)) {
 }
 if (paused || !window_has_focus()) exit;
 sq_update(game, _input, delta_time / 1000000);
+sq_camera_advance(game, delta_time / 1000000, false);
+camera_set_view_pos(sq_camera, game.camera.x, game.camera.y);

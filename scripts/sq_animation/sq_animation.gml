@@ -303,10 +303,39 @@ function sq_compact_weapon_origin(_g,_respect_cover) {
  for(var _i=1;_i<=_steps;++_i){var _nx=lerp(_p.x,_x,_i/_steps);var _ny=lerp(_p.y,_y,_i/_steps);if(sq_blocked(_g,_nx,_ny,_g.cfg.bullet_radius))break;_sx=_nx;_sy=_ny;}
  return {x:_sx,y:_sy};
 }
+function sq_compact_gun_accent(_g,_dx,_dy) {
+ var _p=_g.player;
+ var _w=variable_struct_get(global.sq_compact.meta.weapons,sq_aim_direction(_p.aim));
+ var _m=_w.muzzle[0];
+ var _back_x=round(lengthdir_x(6,_p.aim));
+ var _back_y=round(lengthdir_y(6,_p.aim));
+ var _tip_x=_m.x+_dx;var _tip_y=_m.y+_dy;
+ draw_set_colour(make_colour_rgb(247,239,213));
+ draw_line(_tip_x-_back_x,_tip_y-_back_y,_tip_x-round(_back_x/3),_tip_y-round(_back_y/3));
+ draw_set_colour(make_colour_rgb(79,218,232));
+ draw_line(_tip_x-round(_back_x/2),_tip_y-round(_back_y/2),_tip_x,_tip_y);
+ draw_rectangle(_tip_x,_tip_y,_tip_x,_tip_y,false);
+ draw_set_colour(c_white);
+}
 function sq_compact_draw(_g) {
  var _p=_g.player;var _a=_p.anim;var _s=sq_compact_selection(_g);var _art=global.sq_art;
  var _x=floor(_p.x);var _y=floor(_p.y);var _buff=_p.hype>0 && _p.hp>0;
- draw_set_colour(make_colour_rgb(17,24,34));draw_ellipse(_x-8,_y-1,_x+8,_y+2,false);
+ var _roll_phase=_p.roll>0 ? 1-_p.roll/_g.cfg.roll_duration : 0;
+ // The contact shadow rises with the tuck and returns as the feet land.
+ var _contact=0;
+ if(_p.roll>0){
+  if(_roll_phase<0.13)_contact=0;
+  else if(_roll_phase<0.29)_contact=(_roll_phase-0.13)/0.16;
+  else if(_roll_phase<0.76)_contact=1;
+  else if(_roll_phase<0.94)_contact=(0.94-_roll_phase)/0.18;
+ }
+ var _shadow_shift=round(6*_contact);var _shadow_w=8+round(3*_contact);
+ draw_set_colour(make_colour_rgb(17,24,34));
+ draw_ellipse(_x-_shadow_w,_y-1-_shadow_shift-round(2*_contact),_x+_shadow_w,_y+2-_shadow_shift,false);
+ if(_contact>0){
+  draw_set_colour(make_colour_rgb(26,36,48));
+  draw_ellipse(_x-_shadow_w+3,_y-_shadow_shift-round(_contact),_x+_shadow_w-3,_y+1-_shadow_shift,false);
+ }
  if(_buff){
   var _pulse=floor(_a.hype/80) mod 4;
   draw_set_colour(make_colour_rgb(69,214,237));
@@ -323,13 +352,13 @@ function sq_compact_draw(_g) {
  if(_a.hit>=0 && _a.hit<90 && _s.mode!="roll" && _s.mode!="death"){
   _dx=sign(lengthdir_x(1,_a.hit_dir));_dy=sign(lengthdir_y(1,_a.hit_dir));
  }
- if(_s.gun>=0 && _s.rear)sq_compact_paint(_s.gun,_dx,_dy);
+ if(_s.gun>=0 && _s.rear){sq_compact_paint(_s.gun,_dx,_dy);sq_compact_gun_accent(_g,_dx,_dy);}
  if(variable_struct_exists(_s,"legs") && _s.legs>=0){
   // The action owns the torso and hands; the run cycle owns planted feet.
   sq_compact_paint_section(_s.legs,38,10,_dx,_dy);
   sq_compact_paint_section(_s.body,0,38,_dx,_dy);
  }else sq_compact_paint(_s.body,_dx,_dy);
- if(_s.gun>=0 && !_s.rear)sq_compact_paint(_s.gun,_dx,_dy);
+ if(_s.gun>=0 && !_s.rear){sq_compact_paint(_s.gun,_dx,_dy);sq_compact_gun_accent(_g,_dx,_dy);}
  if(_a.hit>=0 && _a.hit<12 && _p.hp>0){
   gpu_set_blendmode_ext_sepalpha(bm_dest_alpha,bm_zero,bm_zero,bm_one);
   draw_set_colour(make_colour_rgb(250,238,213));draw_rectangle(0,0,47,47,false);

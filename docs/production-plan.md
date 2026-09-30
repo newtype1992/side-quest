@@ -28,7 +28,7 @@ The detailed Last Stop room and full compact Hype Man animation pass are approve
 
 ## Milestone 1 Combat feel
 
-**Status:** combat baseline, approved room, and all five Hype Man finishing animation groups complete. A recorded repeated-attempt playtest on keyboard/mouse and a physical controller remains before this milestone exits.
+**Status:** creator accepted the combat-feel pass on 30 September 2026 after live keyboard/mouse and SCUF feedback, including the fixed camera and longer roll. The approved room and all five Hype Man finishing animation groups are complete. The formal attempt table in `docs/playtest.md` is incomplete; the creator's direct feedback and the revision log record the acceptance. The hidden GameMaker test runner's later `Audio_Init()` stall remains a tooling verification follow-up.
 
 Reload, hit reactions, Make Some Noise gestures, resized On a Roll effects and directional backward-fall death are integrated and creator-approved. See the [animation action pass](hypeman-v9-action-pass.md) for reference research, sources, checks, and process lessons. This character art work moved ahead of the original later art milestone.
 
@@ -66,8 +66,8 @@ The Last Stop environment and compact Hype Man design were brought forward and a
 
 ## Ordered next backlog
 
-1. Complete and record repeated keyboard/mouse and physical-controller combat playtests; fix concrete input, readability and feel issues to close Milestone 1.
-2. Refactor the fixed encounter into reusable room state, then build seeded authored-room assembly and the Bring Ice map.
+1. Refactor the accepted fixed encounter into reusable room state and prove an entrance, combat room and authored manager-arena transition.
+2. Build seeded authored-room assembly and the Bring Ice discovered-room map.
 3. Implement the selected item/weapon rules, the manager boss, ice pickup and escape/result; verify the first slice on both input methods.
 4. Build Get Cash and Find the Lost Phone with their bosses, then add Chaos Friend, persistent content unlock and character-specific party results for the full run.
 

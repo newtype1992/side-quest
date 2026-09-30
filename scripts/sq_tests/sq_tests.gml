@@ -59,6 +59,49 @@ function sq_self_tests() {
     sq_check(!sq_player_invulnerable(_g), "late roll vulnerable");
     sq_check(sq_damage_player(_g, 1) && _g.player.hp == 5, "late roll can take damage");
     sq_check(!sq_damage_player(_g, 1) && _g.player.hp == 5, "hurt grace prevents multiple same-frame hits");
+    _g = sq_test_game(); _g.player.x = 100; _g.player.y = 180;
+    _input = sq_neutral_input(); _input.roll = true; _input.mx = 1;
+    sq_player_step(_g, _input, 1 / 60); _input.roll = false;
+    repeat (22) sq_player_step(_g, _input, 1 / 60);
+    sq_check(_g.player.x > 173 && _g.player.x < 184,
+        "roll clears roughly four body widths during the tucked 380ms animation");
+    var _roll_60_x = _g.player.x;
+    _g = sq_test_game(); _g.player.x = 100; _g.player.y = 180;
+    _input = sq_neutral_input(); _input.roll = true; _input.mx = 1;
+    sq_player_step(_g, _input, 1 / 30); _input.roll = false;
+    repeat (11) sq_player_step(_g, _input, 1 / 30);
+    sq_check(abs(_g.player.x - _roll_60_x) < 3,
+        "roll travel remains consistent at 30 and 60 updates");
+    _g = sq_test_game(); _g.player.x = 100; _g.player.y = 180;
+    _input = sq_neutral_input(); _input.roll = true; _input.my = -1;
+    sq_spawn_bullet(_g, 126, 160, 180, 108, "enemy", 1);
+    for (var _frame = 0; _frame < 20; ++_frame) {
+        sq_player_step(_g, _input, 1 / 60);
+        sq_bullets_step(_g, 1 / 60);
+        _input.roll = false;
+    }
+    sq_check(_g.player.hp == 6 && _g.player.y < 115,
+        "committed roll moves clear of an incoming enemy bullet");
+    _g = sq_test_game(); _g.player.x = 100; _g.player.y = 180;
+    sq_spawn_bullet(_g, 126, 160, 180, 108, "enemy", 1);
+    repeat (20) sq_bullets_step(_g, 1 / 60);
+    sq_check(_g.player.hp == 5,
+        "same enemy bullet hits when the player does not dodge");
+    _g = sq_test_game(); _g.player.x = 100; _g.player.y = 180;
+    _input = sq_neutral_input(); _input.roll = true; _input.mx = 1;
+    sq_player_step(_g, _input, 1 / 60); _input.roll = false;
+    repeat (22) sq_player_step(_g, _input, 1 / 60);
+    var _torso_bullet = {x: _g.player.x, y: _g.player.y - 23, radius: 3};
+    sq_check(sq_actor_hit_by_bullet(_torso_bullet, _g.player, true),
+        "projectile crossing visible player torso counts as a hit");
+    _torso_bullet.x += 22;
+    sq_check(!sq_actor_hit_by_bullet(_torso_bullet, _g.player, true),
+        "projectile outside the visible silhouette stays a miss");
+    _g = sq_test_game(); _g.player.x = 120; _g.player.y = 180;
+    sq_spawn_bullet(_g, 100, 156, 0, 1200, "enemy", 1);
+    sq_bullets_step(_g, 1 / 30);
+    sq_check(_g.player.hp == 5 && array_length(_g.bullets) == 0,
+        "actual enemy projectile damages player when crossing visible upper body");
 
     _g = sq_test_game(); _input = sq_neutral_input(); _input.fire = true;
     sq_player_step(_g, _input, 1 / 60);
@@ -82,6 +125,11 @@ function sq_self_tests() {
     sq_check(_g.player.hype == _g.cfg.hype_duration, "kill activates passive");
     sq_update(_g, sq_neutral_input(), 1 / 60);
     sq_check(_g.mode == "cleared" && array_length(_g.bullets) == 0, "last kill clears room and stray bullets");
+    _g = sq_test_game(); _g.enemies = [sq_enemy(130, 180, "melee", 0)];
+    sq_spawn_bullet(_g, 100, 165, 0, 5000, "player", 2);
+    sq_bullets_step(_g, 1 / 30);
+    sq_check(_g.enemies[0].hp == 4 && _g.hits == 1,
+        "pistol shot crossing visible enemy torso registers");
     _g = sq_test_game(); _g.player.hype = 2; _g.enemies = [sq_enemy(130, 180, "melee", 0)];
     sq_damage_enemy(_g, 0, 10, 0);
     sq_check(_g.player.hype == 2.5, "passive refreshes without stacking");
@@ -94,6 +142,63 @@ function sq_self_tests() {
     sq_spawn_bullet(_g, 275, 188, 0, 500, "player", 4);
     sq_bullets_step(_g, 0.08);
     sq_check(_g.obstacles[4].hp == 0 && sq_obstacle_at(_g, 300, 188, 2) == -1, "breakable crate releases collision");
+    _g = sq_new_game(); _g.mode = "combat";
+    sq_spawn_bullet(_g, 178, 200, 0, 5000, "player", 4);
+    sq_bullets_step(_g, 1 / 30);
+    sq_check(_g.obstacles[0].hp == 10 && sq_obstacle_at(_g, 220, 200, 2) == 0,
+        "shelf survives a carton-breaking shot and still provides cover");
+    repeat (3) { sq_spawn_bullet(_g, 178, 200, 0, 5000, "player", 4); sq_bullets_step(_g, 1 / 30); }
+    sq_check(_g.obstacles[0].hp == 0 && sq_obstacle_at(_g, 220, 200, 2) == -1,
+        "shelf collapse opens its movement and bullet lane");
+    sq_check(_g.obstacles[10].hp == 8 && _g.obstacles[4].hp == 4,
+        "heavy and light cartons start with distinct durability");
+    sq_spawn_bullet(_g, 430, 239, 0, 5000, "player", 4);
+    sq_bullets_step(_g, 1 / 30);
+    sq_check(_g.obstacles[10].hp == 4 && sq_obstacle_at(_g, 464, 239, 2) == 10,
+        "heavy carton survives the shot that breaks a light carton");
+    sq_spawn_bullet(_g, 430, 239, 0, 5000, "player", 4);
+    sq_bullets_step(_g, 1 / 30);
+    sq_check(_g.obstacles[10].hp == 0 && sq_obstacle_at(_g, 464, 239, 2) == -1,
+        "heavy carton eventually breaks and releases its footprint");
+    _g = sq_new_game(); _g.mode = "combat";
+    var _clutter_x = [60, 90, 154, 591];
+    var _clutter_y = [255, 260, 248, 260];
+    var _clutter_index = [11, 12, 13, 6];
+    for (var _c = 0; _c < array_length(_clutter_index); ++_c) {
+        _g.player.x = _clutter_x[_c]; _g.player.y = _clutter_y[_c];
+        sq_move(_g, _g.player, 0, 19);
+        sq_check(_g.obstacles[_clutter_index[_c]].hp == 0 && _g.player.y > _clutter_y[_c] + 10,
+            "walking through small clutter crumbles " + string(_c));
+    }
+    _g = sq_new_game(); _g.mode = "combat";
+    var _enemy = sq_enemy(154, 248, "melee", 0);
+    sq_move(_g, _enemy, 0, 19);
+    sq_check(_g.obstacles[13].hp == 1, "enemy movement does not consume player contact clutter");
+    sq_spawn_bullet(_g, 125, 285, 180, 500, "player", 1);
+    sq_bullets_step(_g, 0.08);
+    sq_check(_g.obstacles[12].hp == 0 && sq_obstacle_at(_g, 90, 285, 2) == -1,
+        "one pistol shot breaks water bottles and clears their footprint");
+    sq_check(variable_struct_exists(global.sq_audio, "prop_break") && variable_struct_exists(global.sq_audio, "metal_break")
+        && variable_struct_exists(global.sq_audio, "paper_break") && variable_struct_exists(global.sq_audio, "bottle_break")
+        && variable_struct_exists(global.sq_audio, "shot"), "arcade gun and material-specific prop cues are loaded");
+    _g = sq_new_game();
+    sq_check(_g.camera.x == 0 && _g.camera.y == 0 && sq_camera_target(_g).x == 0,
+        "camera begins on the approved room art");
+    _g.player.x = 400; _g.player.y = 210;
+    var _camera_mid = sq_camera_target(_g);
+    sq_check(_camera_mid.x == 80 && _camera_mid.y == 30,
+        "camera follows Hype Man across the middle of the room");
+    _g.player.x = 600; _g.player.y = 300;
+    var _camera_target = sq_camera_target(_g);
+    sq_check(_camera_target.x == 160 && _camera_target.y == 70,
+        "camera pans to the dark room margin at the bottom-right edge");
+    sq_camera_advance(_g, 1 / 60, false);
+    sq_check(_g.player.x - _g.camera.x + 24 < 501
+        && _g.player.y - _g.camera.y + 4 < 267,
+        "camera safety edge keeps Hype Man clear of the fixed weapon card while easing");
+    sq_camera_advance(_g, 1, true);
+    sq_check(_g.camera.x == 160 && _g.camera.y == 70,
+        "camera settles at room overscan without changing the HUD position");
 
     _g = sq_test_game(); _g.enemies = [sq_enemy(120, 180, "melee", 0)];
     sq_spawn_bullet(_g, 100, 180, 0, 10, "enemy", 1);

@@ -1,12 +1,16 @@
 # Side Quest — resume here
 
-Checkpoint: 29 September 2026. Read the current action pass in [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md); earlier approval and Git history remain below.
+Checkpoint: 30 September 2026. Read the current action pass in [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md); earlier approval and Git history remain below.
 
 The creator revisited Stage 1 of the Newtype game development lifecycle and defined the [game concept](game-concept.md): fast combat with a funny night-out story for PC action roguelite players; complete each level to reach the party; Steam on Windows first; more explicit language with fade-to-black romantic outcomes. Stage 2 now defines the [three-errand game design](game-design.md) and [Bring Ice first slice](bring-ice-level-design.md). These are design specifications, not implemented or playtested levels. They do not revoke the approved Hype Man animation or Last Stop art.
 
 ## Current work
 
-The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. Moving reload, hit, and ability actions now retain animated run legs. The v8 approved master is preserved. The current project compiled and passed 108 checks plus input-adapter and runtime smoke checks on 29 September (`work/test-ef74a8d86020482fa534a5758a27bf7c.log`). Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`; the [visual review page](hypeman-v9-visual-review.md) gathers the action clips and room captures. The creator approved reload in play and subsequently approved the animations as a group on 29 September. The Scuf input incident is closed: the creator reports RT fire and switching from mouse to controller work, and suspects the short-trigger setting. See [controller-rt-diagnostic.md](controller-rt-diagnostic.md). The player animation pass is approved; the broader repeated-attempt combat-feel playtest remains pending, so the complete level gate is not yet approved.
+The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. Moving reload, hit, and ability actions now retain animated run legs. The v8 approved master is preserved. The project passed 108 animation checks plus input-adapter and runtime smoke checks on 29 September (`work/test-ef74a8d86020482fa534a5758a27bf7c.log`). Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`; the [visual review page](hypeman-v9-visual-review.md) gathers the action clips and room captures. The creator approved the animations as a group on 29 September. The Scuf input incident is closed: the creator reports RT fire and switching from mouse to controller work, and suspects the short-trigger setting. See [controller-rt-diagnostic.md](controller-rt-diagnostic.md). The combat-feel pass was accepted by the creator on 30 September; the first full level remains unbuilt.
+
+The creator then identified five combat-feel fixes. The [local revision](combat-feel-revision.md) implements arcade-style original sound cues, visible-body bullet collision, grounded dodge movement and shadow, a compact Gungeon-informed Side Quest HUD, breakable small clutter, and cover with three durability tiers. The creator accepted controls, arcade sound, visible bullet hits, the roll animation, and the general HUD, then reported that the dodge did not travel far enough to escape bullets. The current roll tuning targets about 79 native pixels over the same 380 ms animation, with 250 ms of invulnerability. Existing uncommitted `Side Quest.yyp` and `docs/playtest.md` edits remain the creator's work.
+
+For the lower-right overlap, the creator chose camera movement rather than relocating the gun card. The card is fixed; the camera follows Hype Man across the room and pans into a dark margin at the right/bottom edge. The held gun and HUD icon have brighter accents. The creator says the longer roll feels "a lot better" and explicitly accepted closing the combat pass on 30 September. The last successful automated run passed 130 checks plus input-adapter and smoke checks; a camera corner capture was reviewed. Later hidden GameMaker runner launches stalled during audio initialization before game code started, so the final smooth follow and longer-roll checks have compiled but not executed in that runner. This is a tooling verification follow-up. The accepted build is still one combat room, not a complete Bring Ice level.
 
 ## Approved baseline from 13 September 2026
 
@@ -30,11 +34,11 @@ At that baseline, reload and hit-reaction animations were the next tasks, follow
 | Verification | Latest build: 94 passing gameplay/animation checks, zero failures, input-adapter check and runtime smoke pass. Actual GameMaker captures reviewed; user approved the visual result. |
 | GitHub | Approved code/art published as 95f6beb on main; existing animated repository banner preserved. |
 
-Standing character height is 28 native pixels on a 48 × 48 canvas, with foot origin (24,44). Gameplay coordinates are 640 × 360; the game renders at 1280 × 720. Idle loops in 800 ms, run in 480 ms, fire in 170 ms, and dodge in 380 ms. Dodge invulnerability remains 220 ms. Preserve the working timings unless a playtest identifies a reason to change them.
+Standing character height is 28 native pixels on a 48 × 48 canvas, with foot origin (24,44). Gameplay coordinates are 640 × 360; the game renders at 1280 × 720. Idle loops in 800 ms, run in 480 ms, fire in 170 ms, and dodge in 380 ms. After playtest feedback about insufficient travel, dodge invulnerability is 250 ms, leaving a vulnerable 130 ms landing.
 
-## Next milestone: combat-ready Hype Man in Last Stop
+## Accepted milestone: combat-ready Hype Man in Last Stop
 
-Passing this review will complete the current character pass and the existing Milestone 1 combat-feel gate. Art production has moved ahead of the original roadmap's later art milestone. No additional rooms, items or friends are required for this gate.
+The creator closed the character and Milestone 1 combat-feel pass on 30 September 2026 after iterative live feedback. Art production moved ahead of the original roadmap's later art milestone. This approval establishes a working combat baseline; it does not complete the Bring Ice level.
 
 The five groups below were open at the v8 baseline. Each is now implemented in the v9 action pass, technically checked, and approved by the creator for animation.
 
@@ -50,20 +54,20 @@ After those five groups:
 
 - [x] Run the GameMaker suite and smoke test with new animation and input-switch behavior covered: 108 checks passed.
 - [x] Review the player animations in play; creator approved the v9 action pass on 29 September 2026.
-- [ ] Finish the broader transition and combat-feel playtest: idle/run/fire/reload/hit/roll/active/buff/death/restart, overlaps, action priority, feet, shadow, pistol/muzzle and shelf occlusion at gameplay size.
-- [ ] Complete several keyboard/mouse and physical-controller attempts using docs/playtest.md. Record controller model, aim/deadzones, drift, disconnect/reconnect, reload/dodge behavior, readable damage and restart.
-- [ ] Fix the concrete problems found in that playtest; record preferred tuning and remaining nonblocking issues.
+- [x] Review and revise combat feel in live play: controls, sound, bullet hits, dodge, HUD, camera, props, gun emphasis and longer-roll travel received creator feedback and final pass acceptance.
+- [ ] Complete the formal attempt table in docs/playtest.md if quantitative comparisons are needed; the creator's direct feedback is the acceptance evidence for this gate.
+- [x] Fix the concrete problems found in the playtest and record the accepted tuning in [combat-feel-revision.md](combat-feel-revision.md).
 - [x] Get the animation pass reviewed by the creator and record the approval here.
-- [ ] Publish the next accepted build after the separate combat-feel gate is resolved.
+- [x] Approve the combat-feel build for direct publication on main without a PR.
 
-The milestone is reached when the five new animation groups are integrated and approved, both input methods meet the combat-feel checks, damage is understandable, repeated attempts remain interesting, and no blocking runtime/transition bugs remain. Passing automated tests alone does not establish feel or enjoyment. There is no time estimate or completion percentage yet.
+The accepted build has the approved five animation groups and creator-reviewed combat feel on keyboard/mouse and SCUF. Automated tests alone did not establish feel or enjoyment. The hidden runner's later audio-initialization stall is recorded separately from live gameplay acceptance; retry that verification before relying on the new roll tests.
 
 ## Exact next session
 
-1. Run Play.cmd or open Side Quest.yyp in GameMaker LTS and press F5. If the IDE reports external project changes, reload the resources from disk before editing; do not save stale in-memory resources over this work.
-2. Play several attempts with keyboard/mouse and a physical controller using [playtest.md](playtest.md). Check reload during movement, dodge interruption, active ability, hits, death and restart.
-3. Record specific gameplay or transition findings and revise those issues in the versioned source. Preserve the approved v8 source and the creator-approved v9 visual direction.
-4. Publish the next level milestone after the combat-feel gate is met.
+1. Refactor the accepted Last Stop combat encounter into reusable room state. Preserve the approved v8 source, creator-approved v9 animation and accepted combat tuning.
+2. Prove an authored entrance → combat room → manager-arena transition, then build seeded 4–6-room assembly with a fork, loop and discovered-room map.
+3. Add the found gun and item rules, manager boss, guarded ice, exit and result. Verify the first slice through full keyboard/mouse and SCUF attempts.
+4. Retry the hidden GameMaker self-test runner when its pre-game `Audio_Init()` stall is resolved; the latest successful full run was 130 checks.
 
 ## Where everything lives
 
@@ -92,11 +96,11 @@ Validation command from the project folder:
 
     powershell -NoProfile -ExecutionPolicy Bypass -File tools/Build.ps1 -Action Test
 
-Latest pre-publication test log: work/test-f253f53a99014cfda91ba41eb88d505e.log. Reproduction details and current animation limitations: docs/hypeman-v8-proof.md.
+Latest successful local combat-feel test: 130 checks plus input-adapter and runtime smoke checks in work/test-1a361197e94941b498030d657d98ddc3.log. Subsequent runner launches stalled during audio initialization, before game Create; final camera follow timing needs a live visual check. The revised props, gun, HUD and camera are documented in docs/combat-feel-revision.md. Reproduction details and current animation limitations: docs/hypeman-v8-proof.md.
 
 ## Git state
 
-On 28 September 2026, the local checkout was reconciled with GitHub main and the planning update was published as 851a806. The creator-approved v9 player animation pass was fast-forwarded directly to GitHub main at 8a03132 on 29 September 2026. The merged local review branch was removed. The separate full level combat-feel gate remains open. Receipt for the earlier art publication: work/github-publication-20260913.json.
+On 28 September 2026, the local checkout was reconciled with GitHub main and the planning update was published as 851a806. The creator-approved v9 player animation pass was fast-forwarded directly to GitHub main at 8a03132 on 29 September 2026. The merged local review branch was removed. The creator accepted the combat-feel pass on 30 September for direct main publication. The pre-existing local `Side Quest.yyp` ordering and `docs/playtest.md` edits are preserved separately. Receipt for the earlier art publication: work/github-publication-20260913.json.
 
 ## After this milestone
 

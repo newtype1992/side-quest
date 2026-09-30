@@ -26,7 +26,7 @@ function sq_enemies_step(_g, _dt) {
             var _can_attack = (_e.kind == "melee" ? _distance < 56 : _distance < 200)
                 && sq_line_clear(_g, _e.x, _e.y, _p.x, _p.y, 3);
             if (_can_attack && _e.timer <= 0) {
-                _e.aim = point_direction(_e.x, _e.y, _p.x, _p.y);
+                _e.aim = point_direction(_e.x, _e.y, _p.x, _p.y - 12);
                 _e.state = "tell"; _e.timer = _e.kind == "melee" ? 0.4 : 0.6;
             } else {
                 var _dir = sq_seek_direction(_g, _e);

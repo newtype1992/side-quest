@@ -4,6 +4,7 @@ function sq_new_game() {
         bounds:{left:44,top:116,right:600,bottom:306},
         cfg: _cfg, mode: "briefing", time: 0, kills: 0, damage_taken: 0,
         shots: 0, hits: 0, nav_time: 0, nav: [], effects: [], bullets: [],
+        camera: {x: 0, y: 0, smooth_x: 0, smooth_y: 0},
         player: {x: 88, y: 180, radius: _cfg.player_radius, aim: 0,
             hp: _cfg.health, ammo: _cfg.magazine, reload: 0, fire: 0,
             roll: 0, roll_dir: 0, roll_cooldown: 0, hurt: 0, hype: 0,
@@ -43,9 +44,31 @@ function sq_move(_g, _actor, _dx, _dy) {
     var _steps = max(1, ceil(max(abs(_dx), abs(_dy)) / 2));
     _dx /= _steps; _dy /= _steps;
     repeat (_steps) {
+        if (_actor == _g.player) sq_touch_clutter(_g, _actor.x + _dx, _actor.y, _actor.radius);
         if (!sq_blocked(_g, _actor.x + _dx, _actor.y, _actor.radius)) _actor.x += _dx;
+        if (_actor == _g.player) sq_touch_clutter(_g, _actor.x, _actor.y + _dy, _actor.radius);
         if (!sq_blocked(_g, _actor.x, _actor.y + _dy, _actor.radius)) _actor.y += _dy;
     }
+}
+
+function sq_touch_clutter(_g, _x, _y, _radius) {
+    for (var _i = 0; _i < array_length(_g.obstacles); ++_i) {
+        var _o = _g.obstacles[_i];
+        if (_o.kind != "clutter" || _o.hp <= 0) continue;
+        var _cx = clamp(_x, _o.x1, _o.x2);
+        var _cy = clamp(_y, _o.y1, _o.y2);
+        if (sqr(_x - _cx) + sqr(_y - _cy) <= sqr(_radius))
+            sq_destroy_clutter(_g, _o, _cx, _cy);
+    }
+}
+
+function sq_destroy_clutter(_g, _o, _x, _y) {
+    if (_o.hp <= 0) return;
+    _o.hp = 0;
+    _g.nav_time = 0;
+    var _kind = _o.clutter == "paper" ? "paper" : (_o.clutter == "boxes" ? "splinter" : "bottle");
+    sq_effect(_g, _x, _y, _kind, _kind == "paper" ? 7 : 11);
+    sq_sound(_kind == "paper" ? "paper_break" : (_kind == "bottle" ? "bottle_break" : "prop_break"));
 }
 
 function sq_line_clear(_g, _x1, _y1, _x2, _y2, _r) {
@@ -102,7 +125,8 @@ function sq_seek_direction(_g, _e) {
 }
 
 function sq_effect(_g, _x, _y, _kind, _size) {
-    array_push(_g.effects, {x: _x, y: _y, kind: _kind, size: _size, life: _kind == "noise" ? 0.4 : 0.24, total: _kind == "noise" ? 0.4 : 0.24});
+    var _life = _kind == "noise" ? 0.4 : ((_kind == "spark" || _kind == "splinter") && _size > 8 ? 0.34 : 0.24);
+    array_push(_g.effects, {x: _x, y: _y, kind: _kind, size: _size, life: _life, total: _life});
 }
 
 function sq_update(_g, _input, _dt) {
