@@ -4,7 +4,7 @@
 
 # Side Quest combat prototype
 
-**Returning to the project? Start with [the project checkpoint](docs/PROJECT_CHECKPOINT.md).** The [game concept](docs/game-concept.md) records the confirmed player experience, audience, platform and full-run goal.
+**Returning to the project? Start with [the project checkpoint](docs/PROJECT_CHECKPOINT.md).** The [game concept](docs/game-concept.md) records the player promise; the [Stage 2 design](docs/game-design.md) defines the full night and [Bring Ice](docs/bring-ice-level-design.md) defines the first slice. Those level rules are designed but not yet built.
 
 Last Stop now uses the detailed approved room artwork with stocked aisle islands, checkout, fridges, depth sorting and occlusion fading. Rendering is 1280 x 720 while gameplay coordinates remain 640 x 360. The detailed room artwork is approved; see `docs/environment.md`.
 

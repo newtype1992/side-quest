@@ -2,7 +2,7 @@
 
 Checkpoint: 29 September 2026. Read the current action pass in [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md); earlier approval and Git history remain below.
 
-The creator revisited Stage 1 of the Newtype game development lifecycle and defined the [game concept](game-concept.md): fast combat with a funny night-out story for PC action roguelite players; complete each level to reach the party; Steam on Windows first; more explicit language with fade-to-black romantic outcomes. Stage 2 rules and the first playable slice still need design and testing. This concept review does not revoke the approved Hype Man animation or Last Stop art.
+The creator revisited Stage 1 of the Newtype game development lifecycle and defined the [game concept](game-concept.md): fast combat with a funny night-out story for PC action roguelite players; complete each level to reach the party; Steam on Windows first; more explicit language with fade-to-black romantic outcomes. Stage 2 now defines the [three-errand game design](game-design.md) and [Bring Ice first slice](bring-ice-level-design.md). These are design specifications, not implemented or playtested levels. They do not revoke the approved Hype Man animation or Last Stop art.
 
 ## Current work
 
@@ -100,6 +100,6 @@ On 28 September 2026, the local checkout was reconciled with GitHub main and the
 
 ## After this milestone
 
-Follow the broader roadmap: decide item slots/controls and prototype a small item set, then build the three-room Bring Ice mission with quest state, ice pickup, transitions and results. A second friend and more enemy art come later.
+Follow the Stage 2 design: prove a generated Bring Ice store maze with Hype Man, selected items, one found gun, an authored manager boss, ice pickup and result. Then build Get Cash and Find the Lost Phone, add Chaos Friend and the character-specific party result. The selected item slots and controls are recorded in [game-design.md](game-design.md).
 
-Not built: procedural room generation, multi-room mission flow, ice pickup/delivery, inventory/items/equipment, additional playable friends, progression/save systems or a complete game. Current rooms are handmade. Enemy art remains temporary. Co-op, large weapon collections and broader party systems remain deferred. Windows standalone packaging previously failed under the installed profile; local F5/Play.cmd works, and packaging is a separate distribution task.
+Not built: seeded room assembly, multi-room mission flow, ice pickup/delivery, inventory/items/equipment, found guns, bosses, Chaos Friend, persistent content unlock, party results or a complete run. The current encounter is one handmade room. Enemy art remains temporary. Co-op, large weapon collections and broader party systems remain deferred. Windows standalone packaging previously failed under the installed profile; local F5/Play.cmd works, and packaging is a separate distribution task.

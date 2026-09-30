@@ -29,15 +29,15 @@ Combat clarity takes priority during fights; jokes, messages, effects and lighti
 
 **Established in the project:** Hype Man; one original convenience-store room; pistol, dodge, health, enemies and cover; Hype Man's abilities; approved pixel-art room and player animations; local Windows play; automated gameplay checks. The controller incident is closed. A repeated-attempt combat-feel playtest is still due.
 
-**Proposed for the first complete playable slice:** the three-room Bring Ice mission: departure/message, Last Stop encounter with ice pickup, and escape/result. The original brief proposes a single playable friend for this slice and a short group-chat response. Its exact quest choice, reward and ending copy are not approved yet.
+**Defined for the first complete playable slice in Stage 2:** Bring Ice uses Hype Man, 4–6 seeded store rooms assembled from authored pieces, a fixed manager boss, ice pickup and escape/result. The original brief's three-handmade-room proposal has been superseded by the [Bring Ice level design](bring-ice-level-design.md). Exact dialogue and balance still need playtesting.
 
-**Broader-game candidates, not current promises:** multiple selectable friends, variable detours and items across one night, party outcomes, shops, additional weapons, permanent progression, procedural maps and co-op. These should earn their place through playtesting and concept decisions rather than being implied by the existing prototype.
+**Broader-game candidates, not current promises:** more than two selectable friends, optional detours beyond the three fixed errands, shops, a large gun pool, permanent combat upgrades, fully generated room geometry and co-op. Stage 2 has since committed to two friends, a small item/gun set, procedural assembly of authored rooms and friend-specific party results; none is implemented merely because it is designed.
 
 ## Stage 1 decisions recorded
 
 1. **Primary promise — answered:** Fast combat with a funny night-out story. Combat responsiveness and readable encounters lead; story gives the action purpose and personality without stopping a fight.
 2. **Target player — answered:** PC action roguelite players. The first slice should earn their interest through controls, enemy patterns and repeatable combat before relying on a larger narrative or progression system.
-3. **Successful run — answered:** Complete each level and reach the party. The number and order of levels, failure/retry rules, and whether choices change the party outcome belong to later design work. For the first Bring Ice slice, finishing that mission and seeing a result remains the proposed proof.
+3. **Successful run — answered:** Complete each level and reach the party. Stage 2 now fixes three errands in order, death restarting the night, and character-specific party results. Finishing Bring Ice and seeing an ice-secured result remains the first proof.
 4. **First release platform — answered:** Steam on Windows PC first. Keyboard/mouse and controller are required input methods. Other operating systems are later candidates, not launch commitments.
 5. **Tone boundary — answered:** More explicit language; romantic outcomes fade to black. Keep the adult cast and mutual choice from the brief. This supports suggestive humor without requiring explicit sexual scenes.
 
