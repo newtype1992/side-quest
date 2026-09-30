@@ -1,6 +1,6 @@
 # Side Quest production plan
 
-Updated 13 September 2026. **Resume with [PROJECT_CHECKPOINT.md](PROJECT_CHECKPOINT.md)** for the approved baseline, exact next task and Git state.
+Updated 29 September 2026. **Resume with [PROJECT_CHECKPOINT.md](PROJECT_CHECKPOINT.md)** for the approved baseline, exact next task and Git state.
 
 The immediate objective is a combat room worth replaying. The attached Side Quest Project Brief supplies the design direction: a single-player, top-down action roguelite about adult friends trying to reach a house party while ordinary errands become dangerous detours. GameMaker is the intended engine, and true pixel art and responsive gun combat are central to the direction.
 
@@ -10,7 +10,7 @@ This plan treats confirmed design choices, proposed examples, and open questions
 
 The first combat room has been implemented in the existing GameMaker project structure. It includes movement and independent aiming, keyboard/mouse and controller input, one pistol, reload, dodge, health, death, restart, two enemy archetypes, solid shelves, a breakable crate, attack tells, hit cues, sound, and clear/death results. Hype Man's proposed passive and active are implemented for immediate testing.
 
-The detailed Last Stop room and compact Hype Man idle/run/fire/dodge proof are approved. Enemy graphics, remaining character animation groups and combat tuning still need work. The build establishes a baseline for tuning; it has not established that the combat is fun or matches the reference's feel. A combat clear is the current ending. There is no ice pickup or multi-room mission yet.
+The detailed Last Stop room and full compact Hype Man animation pass are approved and published on main. Enemy graphics and combat tuning still need work. The build establishes a baseline for tuning; it has not established that the combat is fun or matches the reference's feel. A combat clear is the current ending. There is no ice pickup or multi-room mission yet.
 
 ## Working decisions
 
@@ -27,9 +27,9 @@ The detailed Last Stop room and compact Hype Man idle/run/fire/dodge proof are a
 
 ## Milestone 1 Combat feel
 
-**Status:** combat baseline and approved room/compact character proof complete; five character animation groups and a recorded physical-device playtest remain.
+**Status:** combat baseline, approved room, and all five Hype Man finishing animation groups complete. A recorded repeated-attempt playtest on keyboard/mouse and a physical controller remains before this milestone exits.
 
-Finish reload, hit reactions, Make Some Noise gestures, resized On a Roll effects and directional backward-fall death. Start with reload and hit reactions. See the checkpoint for integration and acceptance checks. This character art work has moved ahead of the original later art milestone.
+Reload, hit reactions, Make Some Noise gestures, resized On a Roll effects and directional backward-fall death are integrated and creator-approved. See the [animation action pass](hypeman-v9-action-pass.md) for reference research, sources, checks, and process lessons. This character art work moved ahead of the original later art milestone.
 
 Play several attempts with each input device. Tune movement, stick response, dodge commitment, the vulnerable end of the roll, projectile speed, enemy tells, and gun feedback. Change one major variable per comparison. The relevant inputs and metrics are available in the build and the playtest form.
 
@@ -65,12 +65,10 @@ The Last Stop environment and compact Hype Man design were brought forward and a
 
 ## Ordered next backlog
 
-1. Finish compact Hype Man reload and hit reactions, then active gesture, passive effects and directional death.
-2. Verify all animation transitions and actual-size readability in the approved room; run the gameplay suite.
-3. Complete and record keyboard/mouse and physical-controller playtests; fix input, readability and feel issues to close Milestone 1.
-4. Decide item capacity, selection and activation controls; prototype the small item set.
-5. Implement reusable room definitions and the three-room Bring Ice quest flow.
-6. Test the complete mission, then choose the second friend and expand the art set.
+1. Complete and record repeated keyboard/mouse and physical-controller combat playtests, including transitions and actual-size readability; fix input, readability and feel issues to close Milestone 1.
+2. Decide item capacity, selection and activation controls; prototype the small item set.
+3. Implement reusable room definitions and the three-room Bring Ice quest flow.
+4. Test the complete mission, then choose the second friend and expand the art set.
 
 ## Open decisions and deferred scope
 
