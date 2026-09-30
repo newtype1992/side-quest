@@ -1,6 +1,6 @@
 # Hype Man action animation pass
 
-29 September 2026. This is a playable, technically verified action pass awaiting creator visual review and hands-on feel testing. It preserves the approved v8 idle, run, fire and dodge work and does not alter the combat timings.
+29 September 2026. This is a playable, technically verified action pass approved by the creator for player animation. It preserves the approved v8 idle, run, fire and dodge work and does not alter the combat timings. The broader combat-feel playtest remains separate.
 
 ## Reference study
 
@@ -36,12 +36,11 @@ The action source is [Hype-Man-v9-Actions.aseprite](../art/hypeman-v8-proof/Hype
 - Actual GameMaker [moving reload](../art/hypeman-v8-proof/review-v9/game-renders/reload-moving.png) and [moving ability](../art/hypeman-v8-proof/review-v9/game-renders/ability-moving.png) captures show the action/run-leg composition in the room. Refreshed four-view [reload](../art/hypeman-v8-proof/review-v9/game-renders/animation-reload.png) and [ability](../art/hypeman-v8-proof/review-v9/game-renders/animation-noise.png) captures show its character-scale join. Still frames cannot establish live movement feel.
 - The four-view hit fixture originally reused the right-facing hit latch for every label. It now sets each view's actual hit facing and impact direction. The corrected [engine hit gallery](../art/hypeman-v8-proof/review-v9/game-renders/animation-hit.png) shows distinct right, front, left, and back poses. The correction passed the 105-check suite, input adapter, and runtime smoke test again; log: `work/test-0ed7158004b147539cae1168a5b9f2c9.log`.
 
-## What still needs judgment
+## Visual approval and remaining gameplay review
 
-- Creator feedback on 29 September: the reload animation looks good in play. Treat its current visual as accepted; keep the movement and dodge-interruption checks in the transition playtest.
-- Review Hit, Make Some Noise, On a Roll, and Death in live play at the actual 2× game display. In particular, judge the force and direction of the hit, whether the ability gesture reads during movement, whether cyan buff motes distract from hostile bullets, and whether the backward fall finishes in a convincing grounded pose.
+- Creator feedback on 29 September: reload looked good in play. The creator subsequently approved the animations as a group, resolving visual review for Hit, Make Some Noise, On a Roll, and Death as well. No further visual revision was requested.
 - Play several attempts on keyboard/mouse and a physical controller. Verify reload while moving, dodge interruption, turning aim during an action, hit reactions during reload, ability-to-fire response, damage readability, shelf occlusion, death and restart. Record concrete issues in [playtest.md](playtest.md).
-- Overall creator visual approval has not yet been recorded. Reload has been accepted; the other actions and transitions remain pending. Automated checks and still captures cannot establish animation feel or match a reference game's quality.
+- The animation pass has creator visual approval and engine evidence. Repeated-attempt combat feel, balance, and enjoyment are still unverified; do not treat animation approval as sign-off for the entire level.
 
 ## Process improvements to carry forward
 

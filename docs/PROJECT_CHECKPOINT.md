@@ -4,7 +4,7 @@ Checkpoint: 29 September 2026. Read the current action pass in [hypeman-v9-actio
 
 ## Current work
 
-The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. Moving reload, hit, and ability actions now retain animated run legs. The v8 approved master is preserved. The latest build passes 108 checks plus input-adapter and runtime smoke checks. Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`. The creator approved the reload animation in play. The Scuf RT still fails to fire after the input-priority fix; an F2 diagnostic overlay is ready to identify its live trigger signal. See [controller-rt-diagnostic.md](controller-rt-diagnostic.md). Other action visuals and full keyboard/controller playtests remain pending, so the combat-ready character gate is not yet approved.
+The v9 action pass now includes reload, hit, Make Some Noise, compact On a Roll motes, and a three-phase directional death in the native GameMaker room. Moving reload, hit, and ability actions now retain animated run legs. The v8 approved master is preserved. The current project compiled and passed 108 checks plus input-adapter and runtime smoke checks on 29 September (`work/test-ef74a8d86020482fa534a5758a27bf7c.log`). Actual engine captures and timed previews are saved in `art/hypeman-v8-proof/review-v9/`; the [visual review page](hypeman-v9-visual-review.md) gathers the action clips and room captures. The creator approved reload in play and subsequently approved the animations as a group on 29 September. The Scuf input incident is closed: the creator reports RT fire and switching from mouse to controller work, and suspects the short-trigger setting. See [controller-rt-diagnostic.md](controller-rt-diagnostic.md). The player animation pass is approved; the broader repeated-attempt combat-feel playtest remains pending, so the complete level gate is not yet approved.
 
 ## Approved baseline from 13 September 2026
 
@@ -34,7 +34,7 @@ Standing character height is 28 native pixels on a 48 × 48 canvas, with foot or
 
 Passing this review will complete the current character pass and the existing Milestone 1 combat-feel gate. Art production has moved ahead of the original roadmap's later art milestone. No additional rooms, items or friends are required for this gate.
 
-The five groups below were open at the v8 baseline. Each is now implemented in the v9 action pass and technically checked, but still needs creator review at actual display size.
+The five groups below were open at the v8 baseline. Each is now implemented in the v9 action pass, technically checked, and approved by the creator for animation.
 
 | Order | Group | v8 fallback | Completion check |
 | --- | --- | --- | --- |
@@ -47,21 +47,21 @@ The five groups below were open at the v8 baseline. Each is now implemented in t
 After those five groups:
 
 - [x] Run the GameMaker suite and smoke test with new animation and input-switch behavior covered: 108 checks passed.
-- [ ] Review all transitions in live play: idle/run/fire/reload/hit/roll/active/buff/death/restart; check overlaps and action priority.
-- [ ] Review feet, shadow, pistol/muzzle, shelf occlusion and palette/alpha at gameplay size in all views.
+- [x] Review the player animations in play; creator approved the v9 action pass on 29 September 2026.
+- [ ] Finish the broader transition and combat-feel playtest: idle/run/fire/reload/hit/roll/active/buff/death/restart, overlaps, action priority, feet, shadow, pistol/muzzle and shelf occlusion at gameplay size.
 - [ ] Complete several keyboard/mouse and physical-controller attempts using docs/playtest.md. Record controller model, aim/deadzones, drift, disconnect/reconnect, reload/dodge behavior, readable damage and restart.
 - [ ] Fix the concrete problems found in that playtest; record preferred tuning and remaining nonblocking issues.
-- [ ] Get the completed character pass reviewed in the actual room; update this checkpoint and publish the next accepted build.
+- [x] Get the animation pass reviewed by the creator and record the approval here.
+- [ ] Publish the next accepted build after the separate combat-feel gate is resolved.
 
 The milestone is reached when the five new animation groups are integrated and approved, both input methods meet the combat-feel checks, damage is understandable, repeated attempts remain interesting, and no blocking runtime/transition bugs remain. Passing automated tests alone does not establish feel or enjoyment. There is no time estimate or completion percentage yet.
 
 ## Exact next session
 
-1. Read [hypeman-v9-action-pass.md](hypeman-v9-action-pass.md) and view the timed `Reload.gif`, `Hit.gif`, `Noise.gif` and `Death.gif` in `art/hypeman-v8-proof/review-v9/`. Compare the actual GameMaker captures in `review-v9/game-renders/` with the approved v8 model.
-2. Run Play.cmd or open Side Quest.yyp in GameMaker LTS and press F5. If the IDE reports external project changes, reload the resources from disk before editing; do not save stale in-memory resources over this work.
-3. Play several attempts with keyboard/mouse and a physical controller using [playtest.md](playtest.md). Check reload during movement, dodge interruption, active ability, hits, death and restart.
-4. Record visual and input findings; revise any concrete issue in the versioned v9 source and verify again in the room.
-5. If the character pass is accepted, update this checkpoint and publish the accepted revision. Preserve the approved v8 source while iterating.
+1. Run Play.cmd or open Side Quest.yyp in GameMaker LTS and press F5. If the IDE reports external project changes, reload the resources from disk before editing; do not save stale in-memory resources over this work.
+2. Play several attempts with keyboard/mouse and a physical controller using [playtest.md](playtest.md). Check reload during movement, dodge interruption, active ability, hits, death and restart.
+3. Record specific gameplay or transition findings and revise those issues in the versioned source. Preserve the approved v8 source and the creator-approved v9 visual direction.
+4. Publish the next level milestone after the combat-feel gate is met.
 
 ## Where everything lives
 
@@ -94,7 +94,7 @@ Latest pre-publication test log: work/test-f253f53a99014cfda91ba41eb88d505e.log.
 
 ## Git state
 
-On 28 September 2026, the local checkout was reconciled with GitHub main and the planning update was published as 851a806. The v9 action pass lives on the local `codex/hypeman-v9-actions` review branch and has not been published while visual review remains pending. Receipt for the earlier art publication: work/github-publication-20260913.json.
+On 28 September 2026, the local checkout was reconciled with GitHub main and the planning update was published as 851a806. The v9 action pass lives on the local `codex/hypeman-v9-actions` branch and has creator visual approval. Publication status should be checked against the remote before reporting it as shipped. Receipt for the earlier art publication: work/github-publication-20260913.json.
 
 ## After this milestone
 
